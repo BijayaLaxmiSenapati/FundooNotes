@@ -15,22 +15,18 @@ public class Utility {
 	{
 		if(registrationDTO.getName().length()<=3)
 		{
-			//create exception for name length less than 3(-6)
 			return -7;
 		}
 		else if(registrationDTO.getContactNumber().length()!=10)
 		{
-			//create exception for contactnumber length not equal to 10(-5)
 			return -6;
 		}
 		else if(registrationDTO.getPassword().length()<8)
 		{
-			//create exception for password length less than 8(-4)
 			return -5;
 		}
 		else if(!registrationDTO.getPassword().equals(registrationDTO.getConfirmPassword()))
 		{
-			//create exception for both the given passwords are not same(-3)
 			return -4;
 		}
 		/*else if(emailValidator.validateEmail(registrationDTO.getEmail()))

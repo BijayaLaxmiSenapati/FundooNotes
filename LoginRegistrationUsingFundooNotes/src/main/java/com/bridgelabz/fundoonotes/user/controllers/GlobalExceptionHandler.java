@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.bridgelabz.fundoonotes.user.exceptions.EmailNotFoundException;
 import com.bridgelabz.fundoonotes.user.exceptions.InvalidContactNumberException;
-import com.bridgelabz.fundoonotes.user.exceptions.InvalidEmailException;
 import com.bridgelabz.fundoonotes.user.exceptions.InvalidNameException;
 import com.bridgelabz.fundoonotes.user.exceptions.InvalidPasswordException;
 import com.bridgelabz.fundoonotes.user.exceptions.PasswordNotFoundException;

@@ -26,7 +26,6 @@ public class UserServiceImplementation implements UserService
 		Optional<User> optional=traineeRepository.findById(loginDTO.getEmail());
 		//write query in place of findById
 		if (!optional.isPresent()) {
-			// throw an exception
 			return -1;
 		}
 		User dbUser = optional.get();
@@ -42,7 +41,6 @@ public class UserServiceImplementation implements UserService
 		int statusCode=utility.validateUserWhileRegistering(registrationDTO);
 		if(statusCode==1)
 		{
-			//call save method
 			user.setName(registrationDTO.getName());
 			user.setPassword(registrationDTO.getConfirmPassword());
 			user.setContactNumber(registrationDTO.getContactNumber());
