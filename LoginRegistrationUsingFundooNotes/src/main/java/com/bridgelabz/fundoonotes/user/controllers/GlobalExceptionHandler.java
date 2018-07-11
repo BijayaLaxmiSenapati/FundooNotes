@@ -1,3 +1,4 @@
+
 package com.bridgelabz.fundoonotes.user.controllers;
 
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,14 @@ import com.bridgelabz.fundoonotes.user.exceptions.InvalidPasswordException;
 import com.bridgelabz.fundoonotes.user.exceptions.PasswordNotFoundException;
 import com.bridgelabz.fundoonotes.user.exceptions.PasswordNotMatchingException;
 import com.bridgelabz.fundoonotes.user.models.ResponseDTO;
+
+/**
+ *
+ * @author Bijaya Laxmi Senapati
+ * @since 10/07/2018
+ * @version 1.0
+ *
+ */
 
 @ControllerAdvice
 public class GlobalExceptionHandler 

@@ -6,6 +6,14 @@ import org.springframework.stereotype.Component;
 import com.bridgelabz.fundoonotes.user.models.RegistrationDTO;
 import com.bridgelabz.fundoonotes.user.regex.EmailValidator;
 
+/**
+*
+* @author Bijaya Laxmi Senapati
+* @since 10/07/2018
+* @version 1.0
+*
+*/
+
 @Component
 public class Utility {
 	@Autowired

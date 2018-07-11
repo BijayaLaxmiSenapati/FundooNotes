@@ -3,6 +3,14 @@ package com.bridgelabz.fundoonotes.user.regex;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+*
+* @author Bijaya Laxmi Senapati
+* @since 10/07/2018
+* @version 1.0
+*
+*/
+
 import org.springframework.stereotype.Component;
 @Component
 public class EmailValidator 

@@ -19,7 +19,13 @@ import com.bridgelabz.fundoonotes.user.models.LoginDTO;
 import com.bridgelabz.fundoonotes.user.models.RegistrationDTO;
 import com.bridgelabz.fundoonotes.user.models.ResponseDTO;
 import com.bridgelabz.fundoonotes.user.services.UserService;
-
+/**
+ * @purpose validates login and registration using mongodb,global exception handling concept
+ * @author Bijaya Laxmi Senapati
+ * @since 10/07/2018
+ * @version 1.0
+ *
+ */
 @RestController
 public class UserController 
 {

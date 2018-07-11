@@ -4,6 +4,13 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.stereotype.Component;
 
+/**
+*
+* @author Bijaya Laxmi Senapati
+* @since 10/07/2018
+* @version 1.0
+*
+*/
 @Component
 @Document(collection = "User") // table name
 public class User {

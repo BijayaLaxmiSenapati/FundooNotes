@@ -11,6 +11,14 @@ import com.bridgelabz.fundoonotes.user.models.User;
 import com.bridgelabz.fundoonotes.user.repositories.UserRepository;
 import com.bridgelabz.fundoonotes.user.utility.Utility;
 
+/**
+*
+* @author Bijaya Laxmi Senapati
+* @since 10/07/2018
+* @version 1.0
+*
+*/
+
 @Service
 public class UserServiceImplementation implements UserService
 {
