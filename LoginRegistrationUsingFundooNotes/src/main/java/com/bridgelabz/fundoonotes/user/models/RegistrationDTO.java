@@ -6,8 +6,8 @@ package com.bridgelabz.fundoonotes.user.models;
 * @version 1.0
 *
 */
-//@Component
 public class RegistrationDTO {
+	
 	private String name;
 
 	private String email;

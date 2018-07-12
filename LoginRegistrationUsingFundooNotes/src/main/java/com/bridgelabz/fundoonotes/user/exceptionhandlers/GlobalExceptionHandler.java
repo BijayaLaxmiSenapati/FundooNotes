@@ -26,7 +26,6 @@ public class GlobalExceptionHandler {
 		ResponseDTO responseDTO = new ResponseDTO();
 		responseDTO.setMessage(e.getMessage());
 		responseDTO.setStatus(-3);
-		System.out.println(e);
 		return new ResponseEntity<ResponseDTO>(responseDTO, HttpStatus.BAD_REQUEST);
 	}
 
@@ -35,7 +34,6 @@ public class GlobalExceptionHandler {
 		ResponseDTO responseDTO = new ResponseDTO();
 		responseDTO.setMessage(e.getMessage());
 		responseDTO.setStatus(-2);
-		System.out.println(e);
 		return new ResponseEntity<ResponseDTO>(responseDTO, HttpStatus.BAD_REQUEST);
 	}
 
@@ -44,7 +42,6 @@ public class GlobalExceptionHandler {
 		ResponseDTO responseDTO = new ResponseDTO();
 		responseDTO.setMessage("Something went wrong");
 		responseDTO.setStatus(-1);
-		System.out.println(e);
 		return new ResponseEntity<ResponseDTO>(responseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 }

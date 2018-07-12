@@ -15,5 +15,7 @@ import com.bridgelabz.fundoonotes.user.models.User;
 */
 @Repository
 public interface UserRepository extends MongoRepository<User, String>{
+	
 public Optional<User> findByEmail(String email);
+
 }

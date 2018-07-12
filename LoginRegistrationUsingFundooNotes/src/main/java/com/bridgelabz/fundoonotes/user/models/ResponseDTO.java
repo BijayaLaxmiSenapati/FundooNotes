@@ -11,7 +11,7 @@ public class ResponseDTO {
 
 	private String message;
 
-	private int Status;
+	private int status;
 
 	public String getMessage() {
 		return message;
@@ -22,11 +22,11 @@ public class ResponseDTO {
 	}
 
 	public int getStatus() {
-		return Status;
+		return status;
 	}
 
 	public void setStatus(int status) {
-		Status = status;
+		this.status = status;
 	}
 
 }

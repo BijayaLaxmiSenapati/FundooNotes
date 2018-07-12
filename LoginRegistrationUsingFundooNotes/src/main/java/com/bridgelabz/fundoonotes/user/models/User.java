@@ -11,8 +11,7 @@ import org.springframework.stereotype.Component;
 * @version 1.0
 *
 */
-@Component
-@Document(collection = "User") // table name
+@Document(collection = "User")
 public class User {
 	@Id
 	private String id;

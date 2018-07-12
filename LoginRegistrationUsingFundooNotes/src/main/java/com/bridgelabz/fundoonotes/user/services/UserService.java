@@ -6,17 +6,17 @@ import com.bridgelabz.fundoonotes.user.models.LoginDTO;
 import com.bridgelabz.fundoonotes.user.models.RegistrationDTO;
 
 /**
-*
-* @author Bijaya Laxmi Senapati
-* @since 10/07/2018
-* @version 1.0
-*
-*/
+ *
+ * @author Bijaya Laxmi Senapati
+ * @since 10/07/2018
+ * @version 1.0
+ *
+ */
 
 public interface UserService {
 
-	int login(LoginDTO loginDTO) throws LoginException;
+	void login(LoginDTO loginDTO) throws LoginException;
 
-	int register(RegistrationDTO registrationDTO) throws RegistrationException;
+	void register(RegistrationDTO registrationDTO) throws RegistrationException;
 
 }

@@ -15,7 +15,6 @@ import com.bridgelabz.fundoonotes.user.models.RegistrationDTO;
 import com.bridgelabz.fundoonotes.user.models.ResponseDTO;
 import com.bridgelabz.fundoonotes.user.services.UserService;
 
-
 /**
  * @purpose validates login and registration using mongodb,global exception
  *          handling concept
@@ -26,13 +25,14 @@ import com.bridgelabz.fundoonotes.user.services.UserService;
  */
 @RestController
 public class UserController {
+
 	@Autowired
 	private UserService userService;
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public ResponseEntity<ResponseDTO> login(@RequestBody LoginDTO loginDTO) throws LoginException {
-		ResponseDTO dto = new ResponseDTO();
 		userService.login(loginDTO);
+		ResponseDTO dto = new ResponseDTO();
 		dto.setMessage("successfully logged in with email:" + loginDTO.getEmail());
 		dto.setStatus(1);
 		return new ResponseEntity<>(dto, HttpStatus.OK);
@@ -42,8 +42,8 @@ public class UserController {
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
 	public ResponseEntity<ResponseDTO> register(@RequestBody RegistrationDTO registrationDTO)
 			throws RegistrationException {
-		ResponseDTO dto = new ResponseDTO();
 		userService.register(registrationDTO);
+		ResponseDTO dto = new ResponseDTO();
 		dto.setMessage("successfully registered with email-id:" + registrationDTO.getEmail());
 		dto.setStatus(1);
 		return new ResponseEntity<>(dto, HttpStatus.CREATED);

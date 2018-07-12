@@ -23,33 +23,69 @@ import com.bridgelabz.fundoonotes.user.utility.Utility;
 
 @Service
 public class UserServiceImplementation implements UserService {
+
 	@Autowired
-	UserRepository userRepository;
-	@Autowired
-	User user;
+	private UserRepository userRepository;
+
 	@Override
-	public int login(LoginDTO loginDTO) throws LoginException {
+	public void login(LoginDTO loginDTO) throws LoginException {
+
 		Optional<User> optional = userRepository.findByEmail(loginDTO.getEmail());
-		// write query in place of findById
+
 		if (!optional.isPresent()) {
+
 			throw new LoginException("Email id not present");
+
 		}
 		User dbUser = optional.get();
-		int statusCode = Utility.validateUserWhileLoggingIn(loginDTO.getPassword(), dbUser.getPassword());
-		return statusCode;
+
+		if (!loginDTO.getPassword().equals(dbUser.getPassword())) {
+			throw new LoginException("Wrong Password given");
+		}
+
 	}
 
 	@Override
-	public int register(RegistrationDTO registrationDTO) throws RegistrationException {
-		int statusCode = Utility.validateUserWhileRegistering(registrationDTO);
-		if (statusCode == 1) {
-			user.setName(registrationDTO.getName());
-			user.setPassword(registrationDTO.getConfirmPassword());
-			user.setContactNumber(registrationDTO.getContactNumber());
-			user.setEmail(registrationDTO.getEmail());
-			userRepository.insert(user);
+	public void register(RegistrationDTO registrationDTO) throws RegistrationException {
+
+		Utility.validateUserWhileRegistering(registrationDTO);
+		
+		Optional<User> optional = userRepository.findByEmail(registrationDTO.getEmail());
+		
+		if(optional!=null) {
+			
+			throw new RegistrationException("Email id already exists");
 		}
-		return statusCode;
+
+		User user = new User();
+		user.setName(registrationDTO.getName());
+		
+	/*	//private static int workload = 12;*/		
+		
+		/*public static String hashPassword(String password_plaintext) {
+			String salt = BCrypt.gensalt(workload);
+			String hashed_password = BCrypt.hashpw(password_plaintext, salt);
+
+			return(hashed_password);
+	}*/
+		
+		
+		/*public static boolean checkPassword(String password_plaintext, String stored_hash) {
+			boolean password_verified = false;
+
+			if(null == stored_hash || !stored_hash.startsWith("$2a$"))
+				throw new java.lang.IllegalArgumentException("Invalid hash provided for comparison");
+
+			password_verified = BCrypt.checkpw(password_plaintext, stored_hash);
+
+			return(password_verified);
+	}*/
+		user.setPassword(registrationDTO.getConfirmPassword());
+		user.setContactNumber(registrationDTO.getContactNumber());
+		user.setEmail(registrationDTO.getEmail());
+
+		userRepository.insert(user);
+
 	}
 
 }

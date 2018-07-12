@@ -1,16 +1,16 @@
 package com.bridgelabz.fundoonotes.user.models;
 
 /**
-*
-* @author Bijaya Laxmi Senapati
-* @since 10/07/2018
-* @version 1.0
-*
-*/
-public class LoginDTO 
-{
-	private String email;
+ *
+ * @author Bijaya Laxmi Senapati
+ * @since 10/07/2018
+ * @version 1.0
+ *
+ */
+public class LoginDTO {
 	
+	private String email;
+
 	private String password;
 
 	public String getEmail() {
@@ -28,6 +28,5 @@ public class LoginDTO
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
-	
+
 }
