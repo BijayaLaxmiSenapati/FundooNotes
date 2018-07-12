@@ -1,5 +1,7 @@
 package com.bridgelabz.fundoonotes.user.services;
 
+import com.bridgelabz.fundoonotes.user.exceptions.LoginException;
+import com.bridgelabz.fundoonotes.user.exceptions.RegistrationException;
 import com.bridgelabz.fundoonotes.user.models.LoginDTO;
 import com.bridgelabz.fundoonotes.user.models.RegistrationDTO;
 
@@ -13,8 +15,8 @@ import com.bridgelabz.fundoonotes.user.models.RegistrationDTO;
 
 public interface UserService {
 
-	int login(LoginDTO loginDTO);
+	int login(LoginDTO loginDTO) throws LoginException;
 
-	int register(RegistrationDTO registrationDTO);
+	int register(RegistrationDTO registrationDTO) throws RegistrationException;
 
 }

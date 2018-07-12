@@ -1,7 +1,4 @@
 package com.bridgelabz.fundoonotes.user.models;
-
-import org.springframework.stereotype.Component;
-
 /**
 *
 * @author Bijaya Laxmi Senapati
@@ -9,7 +6,7 @@ import org.springframework.stereotype.Component;
 * @version 1.0
 *
 */
-@Component
+//@Component
 public class RegistrationDTO {
 	private String name;
 

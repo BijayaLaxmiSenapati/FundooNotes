@@ -14,11 +14,11 @@ import org.springframework.stereotype.Component;
 @Component
 @Document(collection = "User") // table name
 public class User {
-	//@Id
-	//private String id;
+	@Id
+	private String id;
 	
 	private String name;
-	@Id
+
 	private String email;
 	
 	private String contactNumber;

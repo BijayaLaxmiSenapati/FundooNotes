@@ -5,6 +5,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bridgelabz.fundoonotes.user.exceptions.LoginException;
+import com.bridgelabz.fundoonotes.user.exceptions.RegistrationException;
 import com.bridgelabz.fundoonotes.user.models.LoginDTO;
 import com.bridgelabz.fundoonotes.user.models.RegistrationDTO;
 import com.bridgelabz.fundoonotes.user.models.User;
@@ -12,48 +14,40 @@ import com.bridgelabz.fundoonotes.user.repositories.UserRepository;
 import com.bridgelabz.fundoonotes.user.utility.Utility;
 
 /**
-*
-* @author Bijaya Laxmi Senapati
-* @since 10/07/2018
-* @version 1.0
-*
-*/
+ *
+ * @author Bijaya Laxmi Senapati
+ * @since 10/07/2018
+ * @version 1.0
+ *
+ */
 
 @Service
-public class UserServiceImplementation implements UserService
-{
+public class UserServiceImplementation implements UserService {
 	@Autowired
-	UserRepository traineeRepository;
-	@Autowired
-	Utility utility;
+	UserRepository userRepository;
 	@Autowired
 	User user;
 	@Override
-	public int login(LoginDTO loginDTO) 
-	{
-		Optional<User> optional=traineeRepository.findById(loginDTO.getEmail());
-		//write query in place of findById
+	public int login(LoginDTO loginDTO) throws LoginException {
+		Optional<User> optional = userRepository.findByEmail(loginDTO.getEmail());
+		// write query in place of findById
 		if (!optional.isPresent()) {
-			return -1;
+			throw new LoginException("Email id not present");
 		}
 		User dbUser = optional.get();
-		System.out.println(loginDTO.getPassword());
-		System.out.println(dbUser.getPassword());
-		int statusCode=utility.validateUserWhileLoggingIn(loginDTO.getPassword(),dbUser.getPassword());
+		int statusCode = Utility.validateUserWhileLoggingIn(loginDTO.getPassword(), dbUser.getPassword());
 		return statusCode;
 	}
 
 	@Override
-	public int register(RegistrationDTO registrationDTO) 
-	{
-		int statusCode=utility.validateUserWhileRegistering(registrationDTO);
-		if(statusCode==1)
-		{
+	public int register(RegistrationDTO registrationDTO) throws RegistrationException {
+		int statusCode = Utility.validateUserWhileRegistering(registrationDTO);
+		if (statusCode == 1) {
 			user.setName(registrationDTO.getName());
 			user.setPassword(registrationDTO.getConfirmPassword());
 			user.setContactNumber(registrationDTO.getContactNumber());
 			user.setEmail(registrationDTO.getEmail());
-			traineeRepository.insert(user);
+			userRepository.insert(user);
 		}
 		return statusCode;
 	}
