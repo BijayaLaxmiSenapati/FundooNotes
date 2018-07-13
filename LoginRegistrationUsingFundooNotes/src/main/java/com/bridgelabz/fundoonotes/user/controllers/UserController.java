@@ -1,8 +1,11 @@
 package com.bridgelabz.fundoonotes.user.controllers;
 
+import javax.mail.MessagingException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -41,12 +44,21 @@ public class UserController {
 
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
 	public ResponseEntity<ResponseDTO> register(@RequestBody RegistrationDTO registrationDTO)
-			throws RegistrationException {
+			throws RegistrationException, MessagingException {
 		userService.register(registrationDTO);
 		ResponseDTO dto = new ResponseDTO();
 		dto.setMessage("successfully registered with email-id:" + registrationDTO.getEmail());
 		dto.setStatus(1);
 		return new ResponseEntity<>(dto, HttpStatus.CREATED);
 
+	}
+	
+	@RequestMapping(value="/activate/{token}",method=RequestMethod.GET)
+	public ResponseEntity<ResponseDTO> activateUser(@PathVariable String token) {
+		userService.activateUser(token);
+		ResponseDTO dto=new ResponseDTO();
+		dto.setMessage("user successfully activated");
+		dto.setStatus(1);
+		return new ResponseEntity<>(dto,HttpStatus.OK);
 	}
 }

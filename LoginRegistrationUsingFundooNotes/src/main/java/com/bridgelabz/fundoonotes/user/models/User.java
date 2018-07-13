@@ -23,6 +23,8 @@ public class User {
 	private String contactNumber;
 	
 	private String password;
+	
+	private boolean activationStatus;
 
 	public String getName() {
 		return name;
@@ -55,5 +57,22 @@ public class User {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public boolean isActivationStatus() {
+		return activationStatus;
+	}
+
+	public void setActivationStatus(boolean activationStatus) {
+		this.activationStatus = activationStatus;
+	}
+	
 
 }

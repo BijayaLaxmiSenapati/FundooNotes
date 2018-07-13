@@ -1,5 +1,7 @@
 package com.bridgelabz.fundoonotes.user.services;
 
+import javax.mail.MessagingException;
+
 import com.bridgelabz.fundoonotes.user.exceptions.LoginException;
 import com.bridgelabz.fundoonotes.user.exceptions.RegistrationException;
 import com.bridgelabz.fundoonotes.user.models.LoginDTO;
@@ -17,6 +19,8 @@ public interface UserService {
 
 	void login(LoginDTO loginDTO) throws LoginException;
 
-	void register(RegistrationDTO registrationDTO) throws RegistrationException;
+	void register(RegistrationDTO registrationDTO) throws RegistrationException, MessagingException;
+
+	void activateUser(String token);
 
 }

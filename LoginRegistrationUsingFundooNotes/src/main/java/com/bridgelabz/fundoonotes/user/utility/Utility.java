@@ -14,13 +14,12 @@ import com.bridgelabz.fundoonotes.user.models.RegistrationDTO;
  *
  */
 
-// @Component//remove componenent from here and remove creating object of
-// utility from service
 public class Utility {
-	
-	//private static int workload = 12;		
 
-	private static final String EMAIL_REGEX = "^[\\w-\\+]+(\\.[\\w]+)*@[\\w-]+(\\.[\\w]+)*(\\.[a-z]{2,})$";
+	// private static int workload = 12;
+
+	private static final String EMAIL_REGEX = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+			+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
 	// static Pattern object, since pattern is fixed
 
@@ -50,12 +49,5 @@ public class Utility {
 		}*/
 
 	}
-	
-	/*public static String hashPassword(String password_plaintext) {
-		String salt = BCrypt.gensalt(workload);
-		String hashed_password = BCrypt.hashpw(password_plaintext, salt);
-
-		return (hashed_password);
-	}*/
 
 }
