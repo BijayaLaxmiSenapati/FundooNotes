@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 * @version 1.0
 *
 */
-@Document(collection = "User")
+@Document(collection = "Users")
 public class User {
 	@Id
 	private String id;

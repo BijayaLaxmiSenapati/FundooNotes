@@ -9,7 +9,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.bridgelabz.fundoonotes.user.configurations.UserConfig;
 import com.bridgelabz.fundoonotes.user.exceptions.LoginException;
 import com.bridgelabz.fundoonotes.user.exceptions.RegistrationException;
 import com.bridgelabz.fundoonotes.user.models.Email;
@@ -87,7 +86,7 @@ public class UserServiceImplementation implements UserService {
 		Email email=new Email();
 		email.setTo(registrationDTO.getEmail());
 		email.setSubject("Activation Link");
-		email.setText("http:lacalhost:8080/activation/?"+token);
+		email.setText("http://localhost:8080/fundoo/activate/?token="+token);
 		
 		emailService.sendEmail(email);
 		
@@ -104,8 +103,11 @@ public class UserServiceImplementation implements UserService {
 		Optional<User> optional = userRepository.findByEmail(emailFromToken);
 		
 		User user=optional.get();
+				
+		user.setActivationStatus(true);
 		
-		user.setActivationStatus(true);//it may give some exception....so create one exception
+		userRepository.save(user);
+		
 	}
 
 }

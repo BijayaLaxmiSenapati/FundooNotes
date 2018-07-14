@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bridgelabz.fundoonotes.user.exceptions.LoginException;
@@ -27,6 +28,7 @@ import com.bridgelabz.fundoonotes.user.services.UserService;
  *
  */
 @RestController
+@RequestMapping("fundoo/")
 public class UserController {
 
 	@Autowired
@@ -53,8 +55,10 @@ public class UserController {
 
 	}
 	
-	@RequestMapping(value="/activate/{token}",method=RequestMethod.GET)
-	public ResponseEntity<ResponseDTO> activateUser(@PathVariable String token) {
+	@RequestMapping(value="/activate",method=RequestMethod.GET)
+	public ResponseEntity<ResponseDTO> activateUser(@RequestParam(value="token") String token) {
+		System.out.println("Inside Activation");
+		System.out.println(token);
 		userService.activateUser(token);
 		ResponseDTO dto=new ResponseDTO();
 		dto.setMessage("user successfully activated");

@@ -37,11 +37,11 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<ResponseDTO>(responseDTO, HttpStatus.BAD_REQUEST);
 	}
 
-	@ExceptionHandler(Exception.class)
+	/*@ExceptionHandler(Exception.class)
 	public ResponseEntity<ResponseDTO> handleGenericException(Exception e) {
 		ResponseDTO responseDTO = new ResponseDTO();
 		responseDTO.setMessage("Something went wrong");
 		responseDTO.setStatus(-1);
 		return new ResponseEntity<ResponseDTO>(responseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
-	}
+	}*/
 }
