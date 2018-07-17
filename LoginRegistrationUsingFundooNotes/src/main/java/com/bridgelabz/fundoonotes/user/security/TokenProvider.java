@@ -10,16 +10,15 @@ public class TokenProvider {
 	
 	String key = "VIJAY";
 	
-	public String generateToken(User user) {
+	public String generateToken(String Id) {
 		
 		
-		return Jwts.builder().setId(user.getEmail()).
+		return Jwts.builder().setId(Id).
 				signWith(SignatureAlgorithm.HS512, key) .compact();
 	}
 	
 	public String parseToken(String token) {
 		Claims claim= Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
-		String emailFromToken=claim.getId();///get the email id from the token
-		return emailFromToken;
+		return claim.getId();///get the email id from the token
 	}
 }
