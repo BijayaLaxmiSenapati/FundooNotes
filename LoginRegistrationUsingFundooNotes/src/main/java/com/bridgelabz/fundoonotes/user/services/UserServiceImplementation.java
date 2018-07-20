@@ -2,18 +2,15 @@ package com.bridgelabz.fundoonotes.user.services;
 
 import java.util.Optional;
 import javax.mail.MessagingException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.WebApplicationContext;
-import com.bridgelabz.fundoonotes.user.controllers.ResetPasswordDTO;
 import com.bridgelabz.fundoonotes.user.exceptions.LoginException;
 import com.bridgelabz.fundoonotes.user.exceptions.RegistrationException;
 import com.bridgelabz.fundoonotes.user.models.Email;
 import com.bridgelabz.fundoonotes.user.models.LoginDTO;
 import com.bridgelabz.fundoonotes.user.models.RegistrationDTO;
+import com.bridgelabz.fundoonotes.user.models.ResetPasswordDTO;
 import com.bridgelabz.fundoonotes.user.models.User;
 import com.bridgelabz.fundoonotes.user.rabbitmq.Producer;
 import com.bridgelabz.fundoonotes.user.repositories.UserRepository;
@@ -40,10 +37,11 @@ public class UserServiceImplementation implements UserService {
 	@Autowired
 	private Producer producer;
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImplementation.class);
+	//private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImplementation.class);
 
 	@Override
-	public void login(LoginDTO loginDTO) throws LoginException {
+	public String login(LoginDTO loginDTO) throws LoginException {
+		Utility.validateUserWhileLogin(loginDTO);
 
 		Optional<User> optional = userRepository.findByEmail(loginDTO.getEmail());
 
@@ -56,10 +54,15 @@ public class UserServiceImplementation implements UserService {
 
 		if (!passwordEncoder.matches(loginDTO.getPassword(), dbUser.getPassword())) {
 			throw new LoginException("Wrong Password given");
-		} else if (!dbUser.isActivationStatus()) {
+		}
+		if (!dbUser.isActivationStatus()) {
 			throw new LoginException(
 					"given account is not yet activated. First activate your account from the inbox, with mail SUBJECT \"Activation Link\"");
 		}
+		
+		TokenProvider tokenProvider = new TokenProvider();
+		String token = tokenProvider.generateToken(dbUser.getId());
+		return token;
 
 	}
 
@@ -75,7 +78,7 @@ public class UserServiceImplementation implements UserService {
 			throw new RegistrationException("Email id already exists");
 		}
 
-		//try getbean
+		// try getbean
 		User user = new User();
 		user.setName(registrationDTO.getName());
 		user.setPassword(passwordEncoder.encode(registrationDTO.getConfirmPassword()));
@@ -90,30 +93,24 @@ public class UserServiceImplementation implements UserService {
 		TokenProvider tokenProvider = new TokenProvider();
 		String token = tokenProvider.generateToken(userId);
 
-		LOGGER.info("Inside register method of UserServiceImplementation");
-		LOGGER.info("token");
-
-		//EmailService emailService = context.getBean(EmailService.class);// have doubt for wiring
-
-		//try getbean
+		// try getbean
 		Email email = new Email();
 		email.setTo(registrationDTO.getEmail());
 		email.setSubject("Activation Link");
 		email.setText("http://localhost:8080/fundoo/activate/?token=" + token);
 
-		//emailService.sendEmail(email);
-		
 		producer.produceMsg(email);
 
 	}
+	
 
 	@Override
 	public void activateUser(String token) {
 
 		TokenProvider tokenProvider = new TokenProvider();
-		String emailFromToken = tokenProvider.parseToken(token);
+		String idFromToken = tokenProvider.parseToken(token);
 
-		Optional<User> optional = userRepository.findById(emailFromToken);
+		Optional<User> optional = userRepository.findById(idFromToken);
 
 		User user = optional.get();
 
@@ -124,7 +121,9 @@ public class UserServiceImplementation implements UserService {
 	}
 
 	@Override
-	public void forgotPassword(String emailId) throws MessagingException {
+	public void forgotPassword(String emailId) throws MessagingException, LoginException {
+
+		Utility.validateWhileForgotPassword(emailId);
 
 		Optional<User> optional = userRepository.findByEmail(emailId);
 		String userId = optional.get().getId();
@@ -132,33 +131,25 @@ public class UserServiceImplementation implements UserService {
 		TokenProvider tokenProvider = new TokenProvider();
 		String token = tokenProvider.generateToken(userId);
 
-		LOGGER.info("Inside forgot password");
-		LOGGER.info("token");
-
-		//EmailService emailService = context.getBean(EmailService.class);
-
-		//try getbean
+		// try getbean
 		Email email = new Email();
 		email.setTo(emailId);
 		email.setSubject("Link for forgot password");
 		email.setText("http://localhost:8080/fundoo/resetPassword/?token=" + token);
 
-		//emailService.sendEmail(email);
 		producer.produceMsg(email);
-		
 
 	}
 
 	@Override
 	public void resetPassword(String token, ResetPasswordDTO resetPasswordDTO) throws LoginException {
 
+		Utility.validateWhileResetPassword(resetPasswordDTO);
+
 		TokenProvider tokenProvider = new TokenProvider();
 		String userIdFromToken = tokenProvider.parseToken(token);
 
 		Optional<User> optional = userRepository.findById(userIdFromToken);
-		if (!resetPasswordDTO.getNewPassword().equals(resetPasswordDTO.getConfirmNewPassword())) {
-			throw new LoginException("Both 'newPassword' and 'confirmNewPassword' field value should be same");
-		}
 
 		User user = optional.get();
 		user.setPassword(passwordEncoder.encode(resetPasswordDTO.getNewPassword()));

@@ -14,12 +14,12 @@ import com.bridgelabz.fundoonotes.user.services.EmailService;
 public class ConsumerImpl implements Consumer {
 	@Autowired
 	private WebApplicationContext context;
-	
-	@RabbitListener(queues="${jsa.rabbitmq.queue}")
-    public void recievedMessage(Email email) throws MessagingException {
-        System.out.println("Recieved Message: " + email);
-        EmailService emailService = context.getBean(EmailService.class);
-        emailService.sendEmail(email);
-    }
+
+	@RabbitListener(queues = "${jsa.rabbitmq.queue}")
+	public void recievedMessage(Email email) throws MessagingException {
+		System.out.println("Recieved Message: " + email);
+		EmailService emailService = context.getBean(EmailService.class);
+		emailService.sendEmail(email);
+	}
 
 }

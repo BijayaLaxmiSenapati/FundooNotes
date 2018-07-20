@@ -3,8 +3,11 @@ package com.bridgelabz.fundoonotes.user.utility;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.bridgelabz.fundoonotes.user.exceptions.LoginException;
 import com.bridgelabz.fundoonotes.user.exceptions.RegistrationException;
+import com.bridgelabz.fundoonotes.user.models.LoginDTO;
 import com.bridgelabz.fundoonotes.user.models.RegistrationDTO;
+import com.bridgelabz.fundoonotes.user.models.ResetPasswordDTO;
 
 /**
  *
@@ -16,16 +19,9 @@ import com.bridgelabz.fundoonotes.user.models.RegistrationDTO;
 
 public class Utility {
 
-	// private static int workload = 12;
-
-	private static final String EMAIL_REGEX = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
-			+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
-
-	// static Pattern object, since pattern is fixed
+	private static final String EMAIL_REGEX = "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
 	private static Pattern pattern;
-
-	// non-static Matcher object because it's created from the input String
 
 	private static Matcher matcher;
 
@@ -36,7 +32,12 @@ public class Utility {
 	}
 
 	public static void validateUserWhileRegistering(RegistrationDTO registrationDTO) throws RegistrationException {
-		if (registrationDTO.getName().length() <= 3) {
+
+		if (registrationDTO.getName() == null || registrationDTO.getContactNumber() == null
+				|| registrationDTO.getPassword() == null || registrationDTO.getConfirmPassword() == null
+				|| registrationDTO.getEmail() == null) {
+			throw new RegistrationException("All fields should be filled");
+		} else if (registrationDTO.getName().length() <= 3) {
 			throw new RegistrationException("Name should have atleast 3 charecters");
 		} else if (registrationDTO.getContactNumber().length() != 10) {
 			throw new RegistrationException("Contact number should have 10 digits ");
@@ -44,10 +45,40 @@ public class Utility {
 			throw new RegistrationException("Password should have atleast 8 charecters");
 		} else if (!registrationDTO.getPassword().equals(registrationDTO.getConfirmPassword())) {
 			throw new RegistrationException("Both 'password' and 'confirmPassword' field should have same value");
-		} /*else if (validateEmail(registrationDTO.getEmail())) {
+		}
+		if (!validateEmail(registrationDTO.getEmail())) {
 			throw new RegistrationException("Email Format not correct");
-		}*/
+		}
 
+	}
+
+	public static void validateUserWhileLogin(LoginDTO loginDTO) throws LoginException {
+		if (loginDTO.getEmail() == null || loginDTO.getPassword() == null) {
+			throw new LoginException("All fields should be filled");
+		} else if (loginDTO.getPassword().length() < 8) {
+			throw new LoginException("Password should have atleast 8 charecters");
+		}
+		if (!validateEmail(loginDTO.getEmail())) {
+			throw new LoginException("Email Format not correct");
+		}
+	}
+
+	public static void validateWhileResetPassword(ResetPasswordDTO resetPasswordDTO) throws LoginException {
+		if (resetPasswordDTO.getNewPassword() == null || resetPasswordDTO.getConfirmNewPassword() == null) {
+			throw new LoginException("All fields should be filled");
+		} else if (resetPasswordDTO.getNewPassword().length() < 8
+				|| resetPasswordDTO.getConfirmNewPassword().length() < 8) {
+			throw new LoginException("Password should have atleast 8 charecters");
+		}
+		if (!resetPasswordDTO.getNewPassword().equals(resetPasswordDTO.getConfirmNewPassword())) {
+			throw new LoginException("Both 'newPassword' and 'confirmNewPassword' field value should be same");
+		}
+	}
+
+	public static void validateWhileForgotPassword(String emailid) throws LoginException {
+		if (!validateEmail(emailid)) {
+			throw new LoginException("Email Format not correct");
+		}
 	}
 
 }

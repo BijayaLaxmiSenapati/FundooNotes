@@ -5,5 +5,5 @@ import javax.mail.MessagingException;
 import com.bridgelabz.fundoonotes.user.models.Email;
 
 public interface Consumer {
-	 public void recievedMessage(Email email) throws MessagingException ;
+	public void recievedMessage(Email email) throws MessagingException ;
 }

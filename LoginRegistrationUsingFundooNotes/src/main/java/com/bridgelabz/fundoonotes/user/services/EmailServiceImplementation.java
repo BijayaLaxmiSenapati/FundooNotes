@@ -17,13 +17,12 @@ public class EmailServiceImplementation implements EmailService {
 	public void sendEmail(Email email) throws MessagingException {
 
 		MimeMessage message = emailSender.createMimeMessage();
-
 		MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
 		helper.setTo(email.getTo());
 		helper.setSubject(email.getSubject());
 		helper.setText(email.getText());
-		
+
 		emailSender.send(message);
 
 	}

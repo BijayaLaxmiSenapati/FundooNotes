@@ -16,20 +16,21 @@ import static com.google.common.base.Predicates.or;
 @Configuration
 @EnableSwagger2
 public class SwaggerConfig {
-    @Bean
-    public Docket postsApi() {
-        return new Docket(DocumentationType.SWAGGER_2).groupName("public-api").apiInfo(apiInfo()).select()
-                .paths(postPaths()).build();
-    }
+	@Bean
+	public Docket postsApi() {
+		return new Docket(DocumentationType.SWAGGER_2).groupName("public-api").apiInfo(apiInfo()).select()
+				.paths(postPaths()).build();
+	}
 
-    private Predicate<String> postPaths() {
-        return or(regex("/.*"), regex("/.*"));
-    }
+	private Predicate<String> postPaths() {
+		return or(regex("/.*"), regex("/.*"));
+	}
 
-    @SuppressWarnings("deprecation")
+	@SuppressWarnings("deprecation")
 	private ApiInfo apiInfo() {
-        return new ApiInfoBuilder().title("LoginAndRegistrationUsingFundooNotes").description("Notes Taking using Spring Boot ANd MongoDB ")
-                .contact("dharaparanjape.1007@gmail.com").version("1.0").build();
-    }
-   
+		return new ApiInfoBuilder().title("LoginAndRegistrationUsingFundooNotes")
+				.description("Notes Taking using Spring Boot ANd MongoDB ").contact("dharaparanjape.1007@gmail.com")
+				.version("1.0").build();
+	}
+
 }

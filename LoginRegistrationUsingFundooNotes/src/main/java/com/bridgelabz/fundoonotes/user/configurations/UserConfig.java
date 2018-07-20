@@ -14,18 +14,18 @@ import com.bridgelabz.fundoonotes.user.services.EmailServiceImplementation;
 
 @Configuration
 public class UserConfig {
-	
+
 	@Bean
 	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();                                                   	
+		return new BCryptPasswordEncoder();
 	}
-	
+
 	@Bean
 	@Scope("prototype")
 	public User user() {
 		return new User();
 	}
-	
+
 	@Bean
 	@Scope("prototype")
 	public EmailService emailService() {

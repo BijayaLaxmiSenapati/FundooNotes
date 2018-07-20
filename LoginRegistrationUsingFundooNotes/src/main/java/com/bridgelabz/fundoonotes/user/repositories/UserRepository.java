@@ -7,15 +7,15 @@ import org.springframework.stereotype.Repository;
 import com.bridgelabz.fundoonotes.user.models.User;
 
 /**
-*
-* @author Bijaya Laxmi Senapati
-* @since 10/07/2018
-* @version 1.0
-*
-*/
+ *
+ * @author Bijaya Laxmi Senapati
+ * @since 10/07/2018
+ * @version 1.0
+ *
+ */
 @Repository
-public interface UserRepository extends MongoRepository<User, String>{
-	
-public Optional<User> findByEmail(String email);
+public interface UserRepository extends MongoRepository<User, String> {
+
+	public Optional<User> findByEmail(String email);
 
 }

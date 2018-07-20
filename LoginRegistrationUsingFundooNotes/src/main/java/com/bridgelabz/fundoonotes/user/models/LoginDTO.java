@@ -8,7 +8,7 @@ package com.bridgelabz.fundoonotes.user.models;
  *
  */
 public class LoginDTO {
-	
+
 	private String email;
 
 	private String password;

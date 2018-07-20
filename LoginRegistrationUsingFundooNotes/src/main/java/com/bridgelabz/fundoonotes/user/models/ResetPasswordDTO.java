@@ -1,4 +1,4 @@
-package com.bridgelabz.fundoonotes.user.controllers;
+package com.bridgelabz.fundoonotes.user.models;
 
 public class ResetPasswordDTO {
 

@@ -5,25 +5,26 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.stereotype.Component;
 
 /**
-*
-* @author Bijaya Laxmi Senapati
-* @since 10/07/2018
-* @version 1.0
-*
-*/
+ *
+ * @author Bijaya Laxmi Senapati
+ * @since 10/07/2018
+ * @version 1.0
+ *
+ */
 @Document(collection = "Users")
 public class User {
+
 	@Id
 	private String id;
-	
+
 	private String name;
 
 	private String email;
-	
+
 	private String contactNumber;
-	
+
 	private String password;
-	
+
 	private boolean activationStatus;
 
 	public String getName() {
@@ -73,6 +74,11 @@ public class User {
 	public void setActivationStatus(boolean activationStatus) {
 		this.activationStatus = activationStatus;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", name=" + name + ", email=" + email + ", contactNumber=" + contactNumber
+				+ ", password=" + password + ", activationStatus=" + activationStatus + "]";
+	}
 
 }
