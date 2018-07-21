@@ -1,14 +1,10 @@
 package com.bridgelabz.fundoonotes.note.exceptions;
 
-public class NoteException extends Exception {
+public class InvalidDateException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * @param message
-	 */
-	public NoteException(String message) {
+	public InvalidDateException(String message) {
 		super(message);
 	}
-
 }

@@ -6,8 +6,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.bridgelabz.fundoonotes.user.intercepters.LoggerInterceptor;
 
+/**
+ * @author adminstrato
+ *
+ */
 @Configuration
-public class InterceptorConfiguration implements WebMvcConfigurer {
+public class InterceptorConfigurationOfUsers implements WebMvcConfigurer {
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {

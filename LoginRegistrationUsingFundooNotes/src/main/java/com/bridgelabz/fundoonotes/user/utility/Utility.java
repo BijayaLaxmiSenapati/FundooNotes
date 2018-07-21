@@ -25,12 +25,20 @@ public class Utility {
 
 	private static Matcher matcher;
 
+	/**
+	 * @param email
+	 * @return
+	 */
 	public static boolean validateEmail(String email) {
 		pattern = Pattern.compile(EMAIL_REGEX, Pattern.CASE_INSENSITIVE);
 		matcher = pattern.matcher(email);
 		return matcher.matches();
 	}
 
+	/**
+	 * @param registrationDTO
+	 * @throws RegistrationException
+	 */
 	public static void validateUserWhileRegistering(RegistrationDTO registrationDTO) throws RegistrationException {
 
 		if (registrationDTO.getName() == null || registrationDTO.getContactNumber() == null
@@ -52,6 +60,10 @@ public class Utility {
 
 	}
 
+	/**
+	 * @param loginDTO
+	 * @throws LoginException
+	 */
 	public static void validateUserWhileLogin(LoginDTO loginDTO) throws LoginException {
 		if (loginDTO.getEmail() == null || loginDTO.getPassword() == null) {
 			throw new LoginException("All fields should be filled");
@@ -63,6 +75,10 @@ public class Utility {
 		}
 	}
 
+	/**
+	 * @param resetPasswordDTO
+	 * @throws LoginException
+	 */
 	public static void validateWhileResetPassword(ResetPasswordDTO resetPasswordDTO) throws LoginException {
 		if (resetPasswordDTO.getNewPassword() == null || resetPasswordDTO.getConfirmNewPassword() == null) {
 			throw new LoginException("All fields should be filled");
@@ -75,6 +91,10 @@ public class Utility {
 		}
 	}
 
+	/**
+	 * @param emailid
+	 * @throws LoginException
+	 */
 	public static void validateWhileForgotPassword(String emailid) throws LoginException {
 		if (!validateEmail(emailid)) {
 			throw new LoginException("Email Format not correct");

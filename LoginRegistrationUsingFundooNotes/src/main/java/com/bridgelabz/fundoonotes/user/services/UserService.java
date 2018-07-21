@@ -18,14 +18,37 @@ import com.bridgelabz.fundoonotes.user.models.ResetPasswordDTO;
 
 public interface UserService {
 
+	/**
+	 * @param loginDTO
+	 * @return
+	 * @throws LoginException
+	 */
 	String login(LoginDTO loginDTO) throws LoginException;
 
+	/**
+	 * @param registrationDTO
+	 * @throws RegistrationException
+	 * @throws MessagingException
+	 */
 	void register(RegistrationDTO registrationDTO) throws RegistrationException, MessagingException;
 
+	/**
+	 * @param token
+	 */
 	void activateUser(String token);
 
+	/**
+	 * @param emailId
+	 * @throws MessagingException
+	 * @throws LoginException
+	 */
 	void forgotPassword(String emailId) throws MessagingException, LoginException;
 
+	/**
+	 * @param token
+	 * @param resetPasswordDTO
+	 * @throws LoginException
+	 */
 	void resetPassword(String token, ResetPasswordDTO resetPasswordDTO) throws LoginException;
 
 }

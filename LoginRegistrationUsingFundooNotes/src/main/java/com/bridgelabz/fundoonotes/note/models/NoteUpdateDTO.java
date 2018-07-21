@@ -1,7 +1,5 @@
 package com.bridgelabz.fundoonotes.note.models;
 
-import java.util.Date;
-
 public class NoteUpdateDTO {
 
 	private String id;
@@ -9,18 +7,6 @@ public class NoteUpdateDTO {
 	private String title;
 
 	private String description;
-
-	private String color;
-
-	private Date reminder;
-
-	public String getColor() {
-		return color;
-	}
-
-	public void setColor(String color) {
-		this.color = color;
-	}
 
 	public String getId() {
 		return id;
@@ -44,14 +30,6 @@ public class NoteUpdateDTO {
 
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	public Date getReminder() {
-		return reminder;
-	}
-
-	public void setReminder(Date reminder) {
-		this.reminder = reminder;
 	}
 
 }

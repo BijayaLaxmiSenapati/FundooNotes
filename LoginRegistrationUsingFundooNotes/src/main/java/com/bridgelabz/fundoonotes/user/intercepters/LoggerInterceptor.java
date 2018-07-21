@@ -9,6 +9,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+/**
+ * @author adminstrato
+ *
+ */
 @Component
 public class LoggerInterceptor extends HandlerInterceptorAdapter {
 

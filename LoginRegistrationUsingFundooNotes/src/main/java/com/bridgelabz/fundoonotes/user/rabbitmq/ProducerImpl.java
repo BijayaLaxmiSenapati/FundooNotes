@@ -7,6 +7,10 @@ import org.springframework.stereotype.Component;
 
 import com.bridgelabz.fundoonotes.user.models.Email;
 
+/**
+ * @author adminstrato
+ *
+ */
 @Component
 public class ProducerImpl implements Producer {
 	@Autowired

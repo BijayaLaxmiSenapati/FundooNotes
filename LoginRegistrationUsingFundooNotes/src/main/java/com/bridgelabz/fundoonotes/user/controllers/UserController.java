@@ -34,6 +34,12 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 
+	/**
+	 * @param loginDTO
+	 * @param response
+	 * @return
+	 * @throws LoginException
+	 */
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public ResponseEntity<ResponseDTO> login(@RequestBody LoginDTO loginDTO, HttpServletResponse response) throws LoginException {
 
@@ -47,6 +53,12 @@ public class UserController {
 
 	}
 
+	/**
+	 * @param registrationDTO
+	 * @return
+	 * @throws RegistrationException
+	 * @throws MessagingException
+	 */
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
 	public ResponseEntity<ResponseDTO> register(@RequestBody RegistrationDTO registrationDTO)
 			throws RegistrationException, MessagingException {
@@ -60,6 +72,10 @@ public class UserController {
 
 	}
 
+	/**
+	 * @param token
+	 * @return
+	 */
 	@RequestMapping(value = "/activate", method = RequestMethod.GET)
 	public ResponseEntity<ResponseDTO> activateUser(@RequestParam(value = "token") String token) {
 
@@ -71,6 +87,12 @@ public class UserController {
 		return new ResponseEntity<>(dto, HttpStatus.OK);
 	}
 
+	/**
+	 * @param emailId
+	 * @return
+	 * @throws MessagingException
+	 * @throws LoginException
+	 */
 	@RequestMapping(value = "/forgotpassword", method = RequestMethod.POST)
 	public ResponseEntity<ResponseDTO> forgotPassword(@RequestBody String emailId)
 			throws MessagingException, LoginException {
@@ -83,6 +105,12 @@ public class UserController {
 		return new ResponseEntity<>(dto, HttpStatus.OK);
 	}
 
+	/**
+	 * @param token
+	 * @param resetPasswordDTO
+	 * @return
+	 * @throws LoginException
+	 */
 	@RequestMapping(value = "/resetPassword", method = RequestMethod.POST)
 	public ResponseEntity<ResponseDTO> resetPassword(@RequestParam(value = "token") String token,
 			@RequestBody ResetPasswordDTO resetPasswordDTO) throws LoginException {

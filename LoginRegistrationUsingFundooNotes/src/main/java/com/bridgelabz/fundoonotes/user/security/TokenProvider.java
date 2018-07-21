@@ -5,18 +5,26 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
-@Component
+@Component//autowire
 public class TokenProvider {
 
-	String key = "VIJAY";
+	private static final String KEY = "VIJAY";
 
-	public String generateToken(String Id) {
+	/**
+	 * @param id
+	 * @return
+	 */
+	public String generateToken(String id) {
 
-		return Jwts.builder().setId(Id).signWith(SignatureAlgorithm.HS512, key).compact();
+		return Jwts.builder().setId(id).signWith(SignatureAlgorithm.HS512, KEY).compact();
 	}
 
+	/**
+	 * @param token
+	 * @return
+	 */
 	public String parseToken(String token) {
-		Claims claim = Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
+		Claims claim = Jwts.parser().setSigningKey(KEY).parseClaimsJws(token).getBody();
 		return claim.getId();/// get the email id from the token
 	}
 }

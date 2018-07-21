@@ -1,4 +1,4 @@
-package com.bridgelabz.fundoonotes;
+package com.bridgelabz.fundoonotes.user;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
@@ -14,6 +14,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+
+import com.bridgelabz.fundoonotes.LoginRegistrationUsingFundooNotesApplication;
 
 
 @RunWith(SpringRunner.class)
@@ -32,7 +34,7 @@ public class LoginRegistrationUsingFundooNotesApplicationTests {
 
 	}
 
-	/*@Test
+	@Test
 	public void verifyRegistrationWithWrongName() throws Exception {
 		mockMvc.perform(MockMvcRequestBuilders.post("/fundoo/register")
 		        .contentType(MediaType.APPLICATION_JSON)
@@ -43,7 +45,7 @@ public class LoginRegistrationUsingFundooNotesApplicationTests {
 				.andExpect(jsonPath("$.message").value("successfully registered with email-id"))
 				.andExpect(jsonPath("$.status").value(1));
 				
-	}*/
+	}
 	
 	@Test
 	public void loginTest() throws Exception {

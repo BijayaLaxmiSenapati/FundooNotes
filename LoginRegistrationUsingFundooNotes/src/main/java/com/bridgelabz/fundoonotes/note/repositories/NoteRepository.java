@@ -8,9 +8,17 @@ import java.util.List;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 
+/**
+ * @author adminstrato
+ *
+ */
 @Repository
 public interface NoteRepository extends MongoRepository<Note, String> {
 	
+	/**
+	 * @param userId
+	 * @return
+	 */
 	public List<NoteViewDTO> findAllByuserId(String userId);
 
 }

@@ -9,6 +9,10 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 
 import com.bridgelabz.fundoonotes.user.models.Email;
 
+/**
+ * @author adminstrato
+ *
+ */
 public class EmailServiceImplementation implements EmailService {
 
 	@Autowired

@@ -26,6 +26,10 @@ public class GlobalExceptionHandler {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
+	/**
+	 * @param e
+	 * @return
+	 */
 	@ExceptionHandler(RegistrationException.class)
 	public ResponseEntity<ResponseDTO> handleRegistrationException(RegistrationException e) {
 
@@ -37,6 +41,10 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<ResponseDTO>(responseDTO, HttpStatus.BAD_REQUEST);
 	}
 
+	/**
+	 * @param e
+	 * @return
+	 */
 	@ExceptionHandler(LoginException.class)
 	public ResponseEntity<ResponseDTO> handleLoginException(LoginException e) {
 
@@ -48,6 +56,10 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<ResponseDTO>(responseDTO, HttpStatus.BAD_REQUEST);
 	}
 
+	/**
+	 * @param e
+	 * @return
+	 */
 	/*@ExceptionHandler(Exception.class)
 	public ResponseEntity<ResponseDTO> handleGenericException(Exception e) {
 
