@@ -4,8 +4,11 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
+import com.bridgelabz.fundoonotes.note.exceptions.PinException;
+import com.bridgelabz.fundoonotes.note.exceptions.ArchieveException;
 import com.bridgelabz.fundoonotes.note.exceptions.EmptyNoteException;
 import com.bridgelabz.fundoonotes.note.exceptions.InvalidDateException;
+import com.bridgelabz.fundoonotes.note.exceptions.LabelException;
 import com.bridgelabz.fundoonotes.note.exceptions.NoteAuthorisationException;
 import com.bridgelabz.fundoonotes.note.exceptions.NoteException;
 import com.bridgelabz.fundoonotes.note.exceptions.NoteNotFoundException;
@@ -79,10 +82,22 @@ public interface NoteService {
 	 * @throws NoteNotFoundException
 	 * @throws NoteAuthorisationException
 	 */
-	void addReminder(String token, String id, Date remindDate) throws ParseException, InvalidDateException,
+	void addReminder(String token, String id, String remindDate) throws ParseException, InvalidDateException,
 			NoteException, OwnerOfNoteNotFoundException, NoteNotFoundException, NoteAuthorisationException;
 
 	void removeReminder(String token, String id)
 			throws NoteException, OwnerOfNoteNotFoundException, NoteNotFoundException, NoteAuthorisationException;
+
+	void addPin(String token, String id) throws NoteException, OwnerOfNoteNotFoundException, NoteNotFoundException, NoteAuthorisationException, PinException;
+
+	void removePin(String token, String id) throws NoteException, OwnerOfNoteNotFoundException, NoteNotFoundException, NoteAuthorisationException, PinException;
+
+	void addToArchive(String token, String id) throws NoteException, OwnerOfNoteNotFoundException, NoteNotFoundException, NoteAuthorisationException, ArchieveException;
+
+	void removeFromArchive(String token, String id) throws NoteException, OwnerOfNoteNotFoundException, NoteNotFoundException, NoteAuthorisationException, ArchieveException;
+
+	void createLabel(String token, String labelName) throws LabelException;
+
+	void addLabel(String token, String noteId, List<String> labels) throws OwnerOfNoteNotFoundException, NoteNotFoundException;
 
 }

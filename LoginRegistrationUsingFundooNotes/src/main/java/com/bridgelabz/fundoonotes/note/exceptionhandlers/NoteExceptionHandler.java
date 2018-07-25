@@ -7,12 +7,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.bridgelabz.fundoonotes.note.exceptions.ArchieveException;
 import com.bridgelabz.fundoonotes.note.exceptions.EmptyNoteException;
 import com.bridgelabz.fundoonotes.note.exceptions.InvalidDateException;
+import com.bridgelabz.fundoonotes.note.exceptions.LabelException;
 import com.bridgelabz.fundoonotes.note.exceptions.NoteAuthorisationException;
 import com.bridgelabz.fundoonotes.note.exceptions.NoteException;
 import com.bridgelabz.fundoonotes.note.exceptions.NoteNotFoundException;
+import com.bridgelabz.fundoonotes.note.exceptions.NoteTrashException;
 import com.bridgelabz.fundoonotes.note.exceptions.OwnerOfNoteNotFoundException;
+import com.bridgelabz.fundoonotes.note.exceptions.PinException;
 import com.bridgelabz.fundoonotes.user.models.ResponseDTO;
 
 @ControllerAdvice
@@ -102,7 +106,51 @@ public class NoteExceptionHandler {
 
 		ResponseDTO responseDTO = new ResponseDTO();
 		responseDTO.setMessage(e.getMessage());
-		responseDTO.setStatus(-50);
+		responseDTO.setStatus(-60);
+		return new ResponseEntity<ResponseDTO>(responseDTO, HttpStatus.BAD_REQUEST);
+	}
+	
+	@ExceptionHandler(NoteTrashException.class)
+	public ResponseEntity<ResponseDTO> handleNoteTrashException(NoteTrashException e) {
+		
+		LOGGER.error(e.getMessage());
+
+		ResponseDTO responseDTO = new ResponseDTO();
+		responseDTO.setMessage(e.getMessage());
+		responseDTO.setStatus(-70);
+		return new ResponseEntity<ResponseDTO>(responseDTO, HttpStatus.BAD_REQUEST);
+	}
+	
+	@ExceptionHandler(PinException.class)
+	public ResponseEntity<ResponseDTO> handlePinException(PinException e) {
+		
+		LOGGER.error(e.getMessage());
+
+		ResponseDTO responseDTO = new ResponseDTO();
+		responseDTO.setMessage(e.getMessage());
+		responseDTO.setStatus(-80);
+		return new ResponseEntity<ResponseDTO>(responseDTO, HttpStatus.BAD_REQUEST);
+	}
+	
+	@ExceptionHandler(ArchieveException.class)
+	public ResponseEntity<ResponseDTO> handleArchieveException(ArchieveException e) {
+		
+		LOGGER.error(e.getMessage());
+
+		ResponseDTO responseDTO = new ResponseDTO();
+		responseDTO.setMessage(e.getMessage());
+		responseDTO.setStatus(-90);
+		return new ResponseEntity<ResponseDTO>(responseDTO, HttpStatus.BAD_REQUEST);
+	}
+	
+	@ExceptionHandler(LabelException.class)
+	public ResponseEntity<ResponseDTO> handleLabelException(LabelException e) {
+		
+		LOGGER.error(e.getMessage());
+
+		ResponseDTO responseDTO = new ResponseDTO();
+		responseDTO.setMessage(e.getMessage());
+		responseDTO.setStatus(-100);
 		return new ResponseEntity<ResponseDTO>(responseDTO, HttpStatus.BAD_REQUEST);
 	}
 

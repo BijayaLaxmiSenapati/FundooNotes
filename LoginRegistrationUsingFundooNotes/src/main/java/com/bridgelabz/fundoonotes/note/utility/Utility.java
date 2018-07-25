@@ -19,7 +19,7 @@ public class Utility {
 
 		if ((noteCreateDTO.getTitle() == null || noteCreateDTO.getTitle().trim().isEmpty())
 				&& (noteCreateDTO.getDescription() == null || noteCreateDTO.getDescription().trim().isEmpty())) {
-			throw new EmptyNoteException("Both title and description fields should be empty");
+			throw new EmptyNoteException("Both title and description fields should not be empty");
 		}
 	}
 }

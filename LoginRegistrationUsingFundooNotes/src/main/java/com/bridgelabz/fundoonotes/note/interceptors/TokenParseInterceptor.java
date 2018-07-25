@@ -17,15 +17,15 @@ public class TokenParseInterceptor implements HandlerInterceptor {
 
 	private static final Logger LOGGER=LoggerFactory.getLogger(TokenParseInterceptor.class);
 	
-	/*@Override
+	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
-		
-		LOGGER.info("Before handling the request with request url: " + request.getRequestURI());
+		System.out.println("IN INTERCEPTOR");
+		/*LOGGER.info("Before handling the request with request url: " + request.getRequestURI());
 		String token=request.getHeader("token");
 		String userId=tokenProvider.parseToken(token);
-		request.setAttribute("userId", userId);
+		request.setAttribute("userId", userId);*/
 		return true;
-	}*/
+	}
 
 }

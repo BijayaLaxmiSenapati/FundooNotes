@@ -11,6 +11,10 @@ public class NoteCreateDTO {
 	private Date reminder;
 
 	private String color;
+	
+	private boolean isPinned;
+	
+	private boolean isArchived;
 
 	public String getColor() {
 		return color;
@@ -42,6 +46,22 @@ public class NoteCreateDTO {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public boolean isPinned() {
+		return isPinned;
+	}
+
+	public void setPinned(boolean isPinned) {
+		this.isPinned = isPinned;
+	}
+
+	public boolean isArchived() {
+		return isArchived;
+	}
+
+	public void setArchived(boolean isArchived) {
+		this.isArchived = isArchived;
 	}
 
 }

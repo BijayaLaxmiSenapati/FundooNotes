@@ -48,7 +48,7 @@ public class Utility {
 		} else if (registrationDTO.getName().length() <= 3) {
 			throw new RegistrationException("Name should have atleast 3 charecters");
 		} else if (registrationDTO.getContactNumber().length() != 10) {
-			throw new RegistrationException("Contact number should have 10 digits ");
+			throw new RegistrationException("Contact number should have 10 digits");
 		} else if (registrationDTO.getPassword().length() < 8) {
 			throw new RegistrationException("Password should have atleast 8 charecters");
 		} else if (!registrationDTO.getPassword().equals(registrationDTO.getConfirmPassword())) {

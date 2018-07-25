@@ -1,7 +1,6 @@
 package com.bridgelabz.fundoonotes.note.controllers;
 
 import java.text.ParseException;
-import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -16,8 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bridgelabz.fundoonotes.note.exceptions.PinException;
+import com.bridgelabz.fundoonotes.note.exceptions.ArchieveException;
 import com.bridgelabz.fundoonotes.note.exceptions.EmptyNoteException;
 import com.bridgelabz.fundoonotes.note.exceptions.InvalidDateException;
+import com.bridgelabz.fundoonotes.note.exceptions.LabelException;
 import com.bridgelabz.fundoonotes.note.exceptions.NoteAuthorisationException;
 import com.bridgelabz.fundoonotes.note.exceptions.NoteException;
 import com.bridgelabz.fundoonotes.note.exceptions.NoteNotFoundException;
@@ -27,7 +29,7 @@ import com.bridgelabz.fundoonotes.note.models.NoteCreateDTO;
 import com.bridgelabz.fundoonotes.note.models.NoteUpdateDTO;
 import com.bridgelabz.fundoonotes.note.models.NoteViewDTO;
 import com.bridgelabz.fundoonotes.note.services.NoteService;
-import com.bridgelabz.fundoonotes.user.models.ResponseDTO;//using from user
+import com.bridgelabz.fundoonotes.user.models.ResponseDTO;
 
 @RestController
 @RequestMapping("/notes")
@@ -45,9 +47,7 @@ public class NoteController {
 	 * @throws EmptyNoteException
 	 * @throws InvalidDateException
 	 */
-	@RequestMapping(value = "/createNote", method = RequestMethod.POST)//add pin and archieve
-	//remove request header
-	//take HttpServletRequest
+	@RequestMapping(value = "/create-note", method = RequestMethod.POST)
 	public ResponseEntity<NoteViewDTO> createNote(@RequestHeader(value = "token") String token,
 			@RequestBody NoteCreateDTO noteDTO, HttpServletResponse response)
 			throws NoteException, EmptyNoteException, InvalidDateException {
@@ -65,13 +65,10 @@ public class NoteController {
 	 * @throws NoteNotFoundException
 	 * @throws NoteAuthorisationException
 	 */
-	@RequestMapping(value = "/updateNote", method = RequestMethod.PUT) // put
-	//remove request header
-	//take HttpServletRequest request
+	@RequestMapping(value = "/update-note", method = RequestMethod.PUT)
 	public ResponseEntity<ResponseDTO> updateNote(@RequestHeader(value = "token") String token,
 			@RequestBody NoteUpdateDTO noteCreateDTO)
 			throws NoteException, OwnerOfNoteNotFoundException, NoteNotFoundException, NoteAuthorisationException {
-//write String userid=request.getAttribute(userId); and then pass in the method
 		noteService.updateNote(token, noteCreateDTO);
 
 		ResponseDTO responseDTO = new ResponseDTO();
@@ -84,11 +81,8 @@ public class NoteController {
 	 * @param token
 	 * @return
 	 */
-	@RequestMapping(value = "/viewAllNotes", method = RequestMethod.GET)
-	//remove request header
-	//take HttpServletRequest
+	@RequestMapping(value = "/get-all-notes", method = RequestMethod.GET)
 	public ResponseEntity<List<NoteViewDTO>> getAllNotes(@RequestHeader(value = "token") String token) {
-//write String userid=request.getAttribute(userId); and then pass in the method
 		List<NoteViewDTO> list = noteService.getAllNotes(token);
 		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
@@ -102,13 +96,10 @@ public class NoteController {
 	 * @throws NoteNotFoundException
 	 * @throws NoteAuthorisationException
 	 */
-	@RequestMapping(value = "/deleteNote/{id}", method = RequestMethod.PUT)
-	//remove request header
-	//take HttpServletRequest
+	@RequestMapping(value = "/trash-note/{id}", method = RequestMethod.PUT)
 	public ResponseEntity<ResponseDTO> trashNote(@RequestHeader(value = "token") String token,
 			@PathVariable(value = "id") String id)
 			throws OwnerOfNoteNotFoundException, NoteException, NoteNotFoundException, NoteAuthorisationException {
-//write String userid=request.getAttribute("userId"); and then pass in the method
 		noteService.trashNote(token, id);
 
 		ResponseDTO responseDTO = new ResponseDTO();
@@ -125,20 +116,22 @@ public class NoteController {
 	 * @throws OwnerOfNoteNotFoundException
 	 * @throws NoteNotFoundException
 	 * @throws NoteAuthorisationException
-	 * @throws NoteTrashException 
+	 * @throws NoteTrashException
 	 */
-	@RequestMapping(value = "/permanentlyDeleteNote/{id}", method = RequestMethod.DELETE)
-	//remove request header
-	//take HttpServletRequest
+	@RequestMapping(value = "/permanently-delete-note/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<ResponseDTO> permanentlyDeleteNote(@RequestHeader(value = "token") String token,
-			@PathVariable(value = "id") String id, @RequestBody boolean deleteOrRestore)
-			throws NoteException, OwnerOfNoteNotFoundException, NoteNotFoundException, NoteAuthorisationException, NoteTrashException {
-//write String userid=request.getAttribute(userId); and then pass in the method
+			@PathVariable(value = "id") String id, @RequestBody boolean deleteOrRestore) throws NoteException,
+			OwnerOfNoteNotFoundException, NoteNotFoundException, NoteAuthorisationException, NoteTrashException {
 		noteService.permanentlyDeleteNote(token, id, deleteOrRestore);
 
 		ResponseDTO responseDTO = new ResponseDTO();
-		responseDTO.setMessage("Note Successfully deleted");
-		responseDTO.setStatus(1);
+		if (deleteOrRestore) {
+			responseDTO.setMessage("Note Successfully deleted");
+			responseDTO.setStatus(1);
+		} else {
+			responseDTO.setMessage("Note Successfully restored");
+			responseDTO.setStatus(1);
+		}
 		return new ResponseEntity<>(responseDTO, HttpStatus.OK);
 	}
 
@@ -155,13 +148,10 @@ public class NoteController {
 	 * @throws NoteAuthorisationException
 	 */
 	@RequestMapping(value = "/add-reminder/{id}", method = RequestMethod.PUT)
-	//remove request header
-	//take HttpServletRequest
 	public ResponseEntity<ResponseDTO> addReminder(@RequestHeader(value = "token") String token,
-			@PathVariable(value = "id") String id, @RequestBody Date remindDate)
+			@PathVariable(value = "id") String id, @RequestBody String remindDate)
 			throws ParseException, InvalidDateException, NoteException, OwnerOfNoteNotFoundException,
 			NoteNotFoundException, NoteAuthorisationException {
-//write String userid=request.getAttribute(userId); and then pass in the method
 		noteService.addReminder(token, id, remindDate);
 
 		ResponseDTO responseDTO = new ResponseDTO();
@@ -182,12 +172,10 @@ public class NoteController {
 	 * @throws NoteAuthorisationException
 	 */
 	@RequestMapping(value = "/remove-reminder/{id}", method = RequestMethod.PUT)
-	//remove request header
-	//take HttpServletRequest
 	public ResponseEntity<ResponseDTO> removeReminder(@RequestHeader(value = "token") String token,
 			@PathVariable(value = "id") String id) throws ParseException, InvalidDateException, NoteException,
 			OwnerOfNoteNotFoundException, NoteNotFoundException, NoteAuthorisationException {
-//write String userid=request.getAttribute(userId); and then pass in the method
+
 		noteService.removeReminder(token, id);
 
 		ResponseDTO responseDTO = new ResponseDTO();
@@ -196,4 +184,85 @@ public class NoteController {
 		return new ResponseEntity<>(responseDTO, HttpStatus.OK);
 	}
 
+	@RequestMapping(value = "/add-pin/{id}", method = RequestMethod.PUT)
+	public ResponseEntity<ResponseDTO> addPin(@RequestHeader(value = "token") String token,
+			@PathVariable(value = "id") String id) throws NoteException, OwnerOfNoteNotFoundException,
+			NoteNotFoundException, NoteAuthorisationException, PinException {
+
+		noteService.addPin(token, id);
+
+		ResponseDTO responseDTO = new ResponseDTO();
+		responseDTO.setMessage("Successfully the pin is added");
+		responseDTO.setStatus(1);
+		return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/remove-pin/{id}", method = RequestMethod.PUT)
+	public ResponseEntity<ResponseDTO> removePin(@RequestHeader(value = "token") String token,
+			@PathVariable(value = "id") String id) throws NoteException, OwnerOfNoteNotFoundException,
+			NoteNotFoundException, NoteAuthorisationException, PinException {
+
+		noteService.removePin(token, id);
+
+		ResponseDTO responseDTO = new ResponseDTO();
+		responseDTO.setMessage("Successfully the pin is removed");
+		responseDTO.setStatus(1);
+		return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+
+	}
+
+	@RequestMapping(value = "/add-to-archive/{id}", method = RequestMethod.PUT)
+	public ResponseEntity<ResponseDTO> addToArchieve(@RequestHeader(value = "token") String token,
+			@PathVariable(value = "id") String id) throws NoteException, OwnerOfNoteNotFoundException,
+			NoteNotFoundException, NoteAuthorisationException, ArchieveException {
+
+		noteService.addToArchive(token, id);
+
+		ResponseDTO responseDTO = new ResponseDTO();
+		responseDTO.setMessage("Successfully added to Archieve");
+		responseDTO.setStatus(1);
+		return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/remove-from-archive/{id}", method = RequestMethod.PUT)
+	public ResponseEntity<ResponseDTO> removeFromArchieve(@RequestHeader(value = "token") String token,
+			@PathVariable(value = "id") String id) throws NoteException, OwnerOfNoteNotFoundException,
+			NoteNotFoundException, NoteAuthorisationException, ArchieveException {
+
+		noteService.removeFromArchive(token, id);
+
+		ResponseDTO responseDTO = new ResponseDTO();
+		responseDTO.setMessage("Successfully removed from Archieve");
+		responseDTO.setStatus(1);
+		return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="/create-label", method= RequestMethod.POST)
+	public ResponseEntity<ResponseDTO> createLabel(@RequestHeader(value="token")String token, @RequestBody String labelName) throws LabelException{
+		
+		noteService.createLabel(token,labelName);
+		
+		ResponseDTO responseDTO = new ResponseDTO();
+		responseDTO.setMessage("Label created successfully");
+		responseDTO.setStatus(1);
+		return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+	}
+
+	@RequestMapping(value="/add-label/{noteId}", method=RequestMethod.POST)
+	public ResponseEntity<ResponseDTO> addLabel(@RequestHeader(value="token")String token,@PathVariable(value="noteId")String noteId,@RequestBody List<String> labels) throws OwnerOfNoteNotFoundException, NoteNotFoundException {
+		
+		noteService.addLabel(token,noteId,labels);
+		
+		ResponseDTO responseDTO = new ResponseDTO();
+		responseDTO.setMessage("Labels added successfully");
+		responseDTO.setStatus(1); 
+		return new ResponseEntity<>(responseDTO,HttpStatus.OK);
+	}
+	//addlabel to createNote
+	//delete label
+	//edit label
+	//view all trashed note
+	//view all pinned note
+	//view add archived note
+	
 }
