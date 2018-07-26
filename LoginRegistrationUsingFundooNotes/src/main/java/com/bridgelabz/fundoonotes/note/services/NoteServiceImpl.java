@@ -82,6 +82,31 @@ public class NoteServiceImpl implements NoteService {
 			note.setPinned(true);
 		}
 
+		if (!noteCreateDTO.getLabelList().isEmpty()) {
+
+			List<String> labelNames = noteCreateDTO.getLabelList();
+
+			List<Label> list = new ArrayList<Label>();
+
+			for (int i = 0; i < labelNames.size(); i++) {
+				Label labelOfUser = labelRepository.findByUserIdAndName(userIdFromToken, labelNames.get(i));
+
+				if (labelOfUser == null) {
+					Label label = new Label();
+					label.setUserId(userIdFromToken);
+					label.setName(labelNames.get(i));
+
+					labelRepository.insert(label);
+
+					list.add(label);
+					note.setLabelList(list);
+				} else {
+					list.add(labelOfUser);
+					note.setLabelList(list);
+				}
+			}
+		}
+
 		note.setCreatedAt(new Date());
 
 		note.setUserId(userIdFromToken);
@@ -109,10 +134,10 @@ public class NoteServiceImpl implements NoteService {
 	}
 
 	@Override
-	public List<NoteViewDTO> getAllNotes(String token) {
+	public List<Note> getAllNotes(String token) {
 
 		String userIdFromToken = tokenProvider.parseToken(token);
-		List<NoteViewDTO> noteList = noteRepository.findAllByuserId(userIdFromToken);
+		List<Note> noteList = noteRepository.findAllByuserId(userIdFromToken);
 
 		return noteList;
 	}
@@ -295,12 +320,11 @@ public class NoteServiceImpl implements NoteService {
 					optionalNote.get().setLabelList(list);
 				}
 
-				noteRepository.save(optionalNote.get());// out of loop or inside?
+				noteRepository.save(optionalNote.get());
 			} else {
 				List<Label> labelListInNote = optionalNote.get().getLabelList();
 
-				List<String> labelStringNamesInNote;// contains only names of the labels
-
+				List<String> labelStringNamesInNote;
 				if (labelListInNote != null) {
 					labelStringNamesInNote = new ArrayList<String>();
 					for (int k = 0; k < labelListInNote.size(); k++) {
@@ -318,5 +342,78 @@ public class NoteServiceImpl implements NoteService {
 			}
 		}
 	}
+
+	@Override
+	public void editLabel(String token, String currentLabelName, String newLabelName)
+			throws OwnerOfNoteNotFoundException, LabelException {
+
+		String userIdFromToken = tokenProvider.parseToken(token);
+		Optional<User> optionalUser = userRepsitory.findById(userIdFromToken);
+		if (!optionalUser.isPresent()) {
+			throw new OwnerOfNoteNotFoundException("Note owner not present");
+		}
+
+		Label labelOfUser = labelRepository.findByUserIdAndName(userIdFromToken, currentLabelName);
+		if (labelOfUser == null) {
+			throw new LabelException("given label not found");
+		}
+
+		List<Note> listOfNotes = new ArrayList<>();
+		listOfNotes =  noteRepository.findAllByuserId(userIdFromToken);
+
+		for (int i = 0; i < listOfNotes.size(); i++) {
+			if (listOfNotes.get(i).getLabelList() != null) {
+				for (int j = 0; j < listOfNotes.get(i).getLabelList().size(); j++) {
+					if (listOfNotes.get(i).getLabelList().get(j).getName().equals(currentLabelName)) {
+
+						listOfNotes.get(i).getLabelList().get(j).setName(newLabelName);
+
+						Note note = listOfNotes.get(i);
+
+						noteRepository.save(note);
+					}
+				}
+			}
+		}
+		labelOfUser.setName(newLabelName);
+		labelRepository.save(labelOfUser);
+	}
+
+	@Override
+	public void deleteLabel(String token, String labelName) throws OwnerOfNoteNotFoundException, LabelException {
+		
+		String userIdFromToken = tokenProvider.parseToken(token);
+		Optional<User> optionalUser = userRepsitory.findById(userIdFromToken);
+		if (!optionalUser.isPresent()) {
+			throw new OwnerOfNoteNotFoundException("Note owner not present");
+		}
+
+		Label labelOfUser = labelRepository.findByUserIdAndName(userIdFromToken, labelName);
+		if (labelOfUser == null) {
+			throw new LabelException("given label not found");
+		}
+		
+		List<Note> listOfNotes = new ArrayList<>();
+		listOfNotes = noteRepository.findAllByuserId(userIdFromToken);
+		
+		for (int i = 0; i < listOfNotes.size(); i++) {
+			if (listOfNotes.get(i).getLabelList() != null) {
+				for (int j = 0; j < listOfNotes.get(i).getLabelList().size(); j++) {
+					if (listOfNotes.get(i).getLabelList().get(j).getName().equals(labelName)) {
+
+
+						listOfNotes.get(i).getLabelList().remove(j);
+
+						Note note = listOfNotes.get(i);
+
+						noteRepository.save(note);
+					}
+				}
+			}
+		}
+		labelRepository.delete(labelOfUser);
+
+	}
+	
 
 }

@@ -1,6 +1,7 @@
 package com.bridgelabz.fundoonotes.note.models;
 
 import java.util.Date;
+import java.util.List;
 
 public class NoteCreateDTO {
 
@@ -15,6 +16,8 @@ public class NoteCreateDTO {
 	private boolean isPinned;
 	
 	private boolean isArchived;
+
+	private List<String> labelList;
 
 	public String getColor() {
 		return color;
@@ -62,6 +65,14 @@ public class NoteCreateDTO {
 
 	public void setArchived(boolean isArchived) {
 		this.isArchived = isArchived;
+	}
+
+	public List<String> getLabelList() {
+		return labelList;
+	}
+
+	public void setLabelList(List<String> labelList) {
+		this.labelList = labelList;
 	}
 
 }

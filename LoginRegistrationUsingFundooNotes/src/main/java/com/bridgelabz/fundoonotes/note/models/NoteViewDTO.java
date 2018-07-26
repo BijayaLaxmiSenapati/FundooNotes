@@ -23,7 +23,7 @@ public class NoteViewDTO {
 
 	private boolean isPinned;
 	
-	private boolean isArchieved;
+	private boolean isArchived;
 	
 	private List<Label> labelList;
 
@@ -99,12 +99,12 @@ public class NoteViewDTO {
 		this.isPinned = isPinned;
 	}
 
-	public boolean isArchieved() {
-		return isArchieved;
+	public boolean isArchived() {
+		return isArchived;
 	}
 
-	public void setArchieved(boolean isArchieved) {
-		this.isArchieved = isArchieved;
+	public void setArchived(boolean isArchived) {
+		this.isArchived = isArchived;
 	}
 
 	public List<Label> getLabelList() {
