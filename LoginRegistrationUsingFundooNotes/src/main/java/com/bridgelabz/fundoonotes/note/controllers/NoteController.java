@@ -1,6 +1,7 @@
 package com.bridgelabz.fundoonotes.note.controllers;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.bridgelabz.fundoonotes.note.exceptions.PinException;
+import com.bridgelabz.fundoonotes.note.configurations.MessagePropertyConfig;
 import com.bridgelabz.fundoonotes.note.exceptions.ArchieveException;
 import com.bridgelabz.fundoonotes.note.exceptions.EmptyNoteException;
 import com.bridgelabz.fundoonotes.note.exceptions.InvalidDateException;
@@ -26,6 +28,7 @@ import com.bridgelabz.fundoonotes.note.exceptions.NoteException;
 import com.bridgelabz.fundoonotes.note.exceptions.NoteNotFoundException;
 import com.bridgelabz.fundoonotes.note.exceptions.NoteTrashException;
 import com.bridgelabz.fundoonotes.note.exceptions.OwnerOfNoteNotFoundException;
+import com.bridgelabz.fundoonotes.note.models.Label;
 import com.bridgelabz.fundoonotes.note.models.Note;
 import com.bridgelabz.fundoonotes.note.models.NoteCreateDTO;
 import com.bridgelabz.fundoonotes.note.models.NoteUpdateDTO;
@@ -37,6 +40,9 @@ import com.bridgelabz.fundoonotes.user.models.ResponseDTO;
 @RequestMapping("/notes")
 public class NoteController {
 
+	@Autowired
+	MessagePropertyConfig messagePropertyConfig;
+	
 	@Autowired
 	private NoteService noteService;
 
@@ -51,10 +57,10 @@ public class NoteController {
 	 */
 	@PostMapping(value = "/create-note")
 	public ResponseEntity<NoteViewDTO> createNote(@RequestHeader(value = "token") String token,
-			@RequestBody NoteCreateDTO noteDTO, HttpServletResponse response)
+			@RequestBody NoteCreateDTO noteCreateDTO, HttpServletResponse response)
 			throws NoteException, EmptyNoteException, InvalidDateException {
 
-		NoteViewDTO noteViewDTO = noteService.createNote(token, noteDTO);
+		NoteViewDTO noteViewDTO = noteService.createNote(token, noteCreateDTO);
 		return new ResponseEntity<>(noteViewDTO, HttpStatus.CREATED);
 	}
 
@@ -69,13 +75,13 @@ public class NoteController {
 	 */
 	@PutMapping(value = "/update-note")
 	public ResponseEntity<ResponseDTO> updateNote(@RequestHeader(value = "token") String token,
-			@RequestBody NoteUpdateDTO noteCreateDTO)
+			@RequestBody NoteUpdateDTO noteUpdateDTO)
 			throws NoteException, OwnerOfNoteNotFoundException, NoteNotFoundException, NoteAuthorisationException {
-		noteService.updateNote(token, noteCreateDTO);
+		noteService.updateNote(token, noteUpdateDTO);
 
 		ResponseDTO responseDTO = new ResponseDTO();
-		responseDTO.setMessage("Note Successfully updated");
-		responseDTO.setStatus(1);
+		responseDTO.setMessage(messagePropertyConfig.getUpdateNoteMsg());
+		responseDTO.setStatus(messagePropertyConfig.getSuccessfulStatus());
 		return new ResponseEntity<>(responseDTO, HttpStatus.OK);
 	}
 
@@ -86,6 +92,19 @@ public class NoteController {
 	@GetMapping(value = "/get-all-notes")
 	public ResponseEntity<List<Note>> getAllNotes(@RequestHeader(value = "token") String token) {
 		List<Note> list = noteService.getAllNotes(token);
+		List<Note> pinnedList=new ArrayList<>();
+		List<Note> unPinnedList=new ArrayList<>();
+		for (int i = 0; i < list.size(); i++) {
+			
+			if(list.get(i).isPinned()) {
+				pinnedList.add(list.get(i));
+			}
+			else
+				unPinnedList.add(list.get(i));
+		}
+		list=new ArrayList<>();
+		list.addAll(pinnedList);
+		list.addAll(unPinnedList);
 		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
 
@@ -105,8 +124,8 @@ public class NoteController {
 		noteService.trashNote(token, id);
 
 		ResponseDTO responseDTO = new ResponseDTO();
-		responseDTO.setMessage("Note added to trash");
-		responseDTO.setStatus(1);
+		responseDTO.setMessage(messagePropertyConfig.getTrashNoteMsg());
+		responseDTO.setStatus(messagePropertyConfig.getSuccessfulStatus());
 		return new ResponseEntity<>(responseDTO, HttpStatus.OK);
 	}
 
@@ -128,11 +147,11 @@ public class NoteController {
 
 		ResponseDTO responseDTO = new ResponseDTO();
 		if (deleteOrRestore) {
-			responseDTO.setMessage("Note Successfully deleted");
-			responseDTO.setStatus(1);
+			responseDTO.setMessage(messagePropertyConfig.getPermanentlyDeleteNoteMsgDLT());
+			responseDTO.setStatus(messagePropertyConfig.getSuccessfulStatus());
 		} else {
-			responseDTO.setMessage("Note Successfully restored");
-			responseDTO.setStatus(1);
+			responseDTO.setMessage(messagePropertyConfig.getPermanentlyDeleteNoteMsgRestore());
+			responseDTO.setStatus(messagePropertyConfig.getSuccessfulStatus());
 		}
 		return new ResponseEntity<>(responseDTO, HttpStatus.OK);
 	}
@@ -157,8 +176,8 @@ public class NoteController {
 		noteService.addReminder(token, id, remindDate);
 
 		ResponseDTO responseDTO = new ResponseDTO();
-		responseDTO.setMessage("Reminder successfully added to the note");
-		responseDTO.setStatus(1);
+		responseDTO.setMessage(messagePropertyConfig.getAddReminderMsg());
+		responseDTO.setStatus(messagePropertyConfig.getSuccessfulStatus());
 		return new ResponseEntity<>(responseDTO, HttpStatus.OK);
 	}
 
@@ -181,8 +200,8 @@ public class NoteController {
 		noteService.removeReminder(token, id);
 
 		ResponseDTO responseDTO = new ResponseDTO();
-		responseDTO.setMessage("Reminder successfully added to the note");
-		responseDTO.setStatus(1);
+		responseDTO.setMessage(messagePropertyConfig.getRemoveReminderMsg());
+		responseDTO.setStatus(messagePropertyConfig.getSuccessfulStatus());
 		return new ResponseEntity<>(responseDTO, HttpStatus.OK);
 	}
 
@@ -194,8 +213,8 @@ public class NoteController {
 		noteService.addPin(token, id);
 
 		ResponseDTO responseDTO = new ResponseDTO();
-		responseDTO.setMessage("Successfully the pin is added");
-		responseDTO.setStatus(1);
+		responseDTO.setMessage(messagePropertyConfig.getAddPinMsg());
+		responseDTO.setStatus(messagePropertyConfig.getSuccessfulStatus());
 		return new ResponseEntity<>(responseDTO, HttpStatus.OK);
 	}
 
@@ -207,8 +226,8 @@ public class NoteController {
 		noteService.removePin(token, id);
 
 		ResponseDTO responseDTO = new ResponseDTO();
-		responseDTO.setMessage("Successfully the pin is removed");
-		responseDTO.setStatus(1);
+		responseDTO.setMessage(messagePropertyConfig.getRemovePinMsg());
+		responseDTO.setStatus(messagePropertyConfig.getSuccessfulStatus());
 		return new ResponseEntity<>(responseDTO, HttpStatus.OK);
 
 	}
@@ -221,8 +240,8 @@ public class NoteController {
 		noteService.addToArchive(token, id);
 
 		ResponseDTO responseDTO = new ResponseDTO();
-		responseDTO.setMessage("Successfully added to Archieve");
-		responseDTO.setStatus(1);
+		responseDTO.setMessage(messagePropertyConfig.getAddToArchiveMsg());
+		responseDTO.setStatus(messagePropertyConfig.getSuccessfulStatus());
 		return new ResponseEntity<>(responseDTO, HttpStatus.OK);
 	}
 
@@ -234,68 +253,115 @@ public class NoteController {
 		noteService.removeFromArchive(token, id);
 
 		ResponseDTO responseDTO = new ResponseDTO();
-		responseDTO.setMessage("Successfully removed from Archieve");
-		responseDTO.setStatus(1);
-		return new ResponseEntity<>(responseDTO, HttpStatus.OK);
-	}
-	
-	@PostMapping(value="/create-label")
-	public ResponseEntity<ResponseDTO> createLabel(@RequestHeader(value="token")String token, @RequestBody String labelName) throws LabelException{
-		
-		noteService.createLabel(token,labelName);
-		
-		ResponseDTO responseDTO = new ResponseDTO();
-		responseDTO.setMessage("Label created successfully");
-		responseDTO.setStatus(1);
+		responseDTO.setMessage(messagePropertyConfig.getRemoveFromArchive());
+		responseDTO.setStatus(messagePropertyConfig.getSuccessfulStatus());
 		return new ResponseEntity<>(responseDTO, HttpStatus.OK);
 	}
 
-	@PostMapping(value="/add-label/{noteId}")
-	public ResponseEntity<ResponseDTO> addLabel(@RequestHeader(value="token")String token,@PathVariable(value="noteId")String noteId,@RequestBody List<String> labels) throws OwnerOfNoteNotFoundException, NoteNotFoundException {
-		
-		noteService.addLabel(token,noteId,labels);
-		
+	@PostMapping(value = "/create-label")
+	public ResponseEntity<ResponseDTO> createLabel(@RequestHeader(value = "token") String token,
+			@RequestBody String labelName) throws LabelException {
+
+		noteService.createLabel(token, labelName);
+
 		ResponseDTO responseDTO = new ResponseDTO();
-		responseDTO.setMessage("Labels added successfully");
-		responseDTO.setStatus(1); 
-		return new ResponseEntity<>(responseDTO,HttpStatus.OK);
+		responseDTO.setMessage(messagePropertyConfig.getCreateLabelMsg());
+		responseDTO.setStatus(messagePropertyConfig.getSuccessfulStatus());
+		return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+	}
+
+	@PostMapping(value = "/add-label/{noteId}")
+	public ResponseEntity<ResponseDTO> addLabel(@RequestHeader(value = "token") String token,
+			@PathVariable(value = "noteId") String noteId, @RequestBody List<String> labels)
+			throws OwnerOfNoteNotFoundException, NoteNotFoundException {
+
+		noteService.addLabel(token, noteId, labels);
+
+		ResponseDTO responseDTO = new ResponseDTO();
+		responseDTO.setMessage(messagePropertyConfig.getAddLabelMsg());
+		responseDTO.setStatus(messagePropertyConfig.getSuccessfulStatus());
+		return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+	}
+
+	@PutMapping(value = "/edit-label")
+	public ResponseEntity<ResponseDTO> editLabel(@RequestHeader(value = "token") String token,
+			@RequestParam String currentLabelName, @RequestParam String newLabelName)
+			throws OwnerOfNoteNotFoundException, LabelException {
+
+		noteService.editLabel(token, currentLabelName, newLabelName);
+
+		ResponseDTO responseDTO = new ResponseDTO();
+		responseDTO.setMessage(messagePropertyConfig.getEditLabelMsg());
+		responseDTO.setStatus(messagePropertyConfig.getSuccessfulStatus());
+		return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+	}
+
+	@DeleteMapping(value = "/delete-label")
+	public ResponseEntity<ResponseDTO> deleteLabel(@RequestHeader(value = "token") String token,
+			@RequestParam String labelName) throws OwnerOfNoteNotFoundException, LabelException {
+
+		noteService.deleteLabel(token, labelName);
+
+		ResponseDTO responseDTO = new ResponseDTO();
+		responseDTO.setMessage(messagePropertyConfig.getDeleteLabelMsg());
+		responseDTO.setStatus(messagePropertyConfig.getSuccessfulStatus());
+		return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+	}
+
+	@GetMapping(value = "/get-all-label")
+	public ResponseEntity<List<Label>> viewAllLabel(@RequestHeader(value = "token") String token)
+			throws OwnerOfNoteNotFoundException, LabelException {
+
+		List<Label> labelList = noteService.getAllLabel(token);
+
+		return new ResponseEntity<>(labelList, HttpStatus.OK);
+	}
+
+	@GetMapping(value = "/notes-by-label-name/{labelName}")
+	public ResponseEntity<List<Note>> notesByLabelName(@RequestHeader(value = "token") String token,
+			@RequestParam String labelName) throws OwnerOfNoteNotFoundException, LabelException {
+
+		List<Note> noteList = noteService.notesByLabelName(token, labelName);
+
+		return new ResponseEntity<>(noteList, HttpStatus.OK);
+
 	}
 	
-	@PutMapping(value="/edit-label")
-	public ResponseEntity<ResponseDTO> editLabel(@RequestHeader(value="token")String token,@RequestParam String currentLabelName,@RequestParam String newLabelName) throws OwnerOfNoteNotFoundException, LabelException{
-		
-		noteService.editLabel(token,currentLabelName,newLabelName);
-		
-		ResponseDTO responseDTO = new ResponseDTO();
-		responseDTO.setMessage("Label edited successfully");
-		responseDTO.setStatus(1); 
-		return new ResponseEntity<>(responseDTO,HttpStatus.OK);
+	@GetMapping(value = "/view-all-trashed-note")
+	public ResponseEntity<List<Note>> viewAllTrashedNote(@RequestHeader(value = "token") String token)
+			throws OwnerOfNoteNotFoundException, LabelException {
+
+		List<Note> trashedNoteList = noteService.getAllTrashedNote(token);
+
+		return new ResponseEntity<>(trashedNoteList, HttpStatus.OK);
 	}
 	
-	@DeleteMapping(value="/delete-label")
-	public ResponseEntity<ResponseDTO> deleteLabel(@RequestHeader(value="token")String token,@RequestParam String labelName) throws OwnerOfNoteNotFoundException, LabelException{
-		
-		noteService.deleteLabel(token,labelName);
-		
-		ResponseDTO responseDTO = new ResponseDTO();
-		responseDTO.setMessage("Label deleted successfully");
-		responseDTO.setStatus(1); 
-		return new ResponseEntity<>(responseDTO,HttpStatus.OK);		
+	@GetMapping(value = "/get-all-archived-note")
+	public ResponseEntity<List<Note>> getAllArchivedNote(@RequestHeader(value = "token") String token)
+			throws OwnerOfNoteNotFoundException, LabelException {
+
+		List<Note> pinnedNoteList = noteService.getAllArchivedNote(token);
+
+		return new ResponseEntity<>(pinnedNoteList, HttpStatus.OK);
 	}
-	//view all label
-	@GetMapping(value="/view-all-label")
-	public ResponseEntity<ResponseDTO> viewAllLabel(@RequestHeader(value="token")String token){
-		
-		return null;		
-	}
-	//view all the notes in which label is applied
-	@GetMapping(value="/notes-by-label-name")
-	public ResponseEntity<ResponseDTO> notesByLabelName(@RequestHeader(value="token")String token){
-		return null;
-		
-	}
-	//view all trashed note
-	//view all pinned note
-	//view add archived note
 	
+	@DeleteMapping(value="/empty-trash")
+	public ResponseEntity<ResponseDTO> emptyTrash(@RequestHeader(value = "token") String token) throws OwnerOfNoteNotFoundException{
+		noteService.emptyTrash(token);
+		ResponseDTO responseDTO = new ResponseDTO();
+		responseDTO.setMessage(messagePropertyConfig.getEmptyTrashMsg());
+		responseDTO.setStatus(messagePropertyConfig.getSuccessfulStatus());
+		return new ResponseEntity<>(responseDTO, HttpStatus.OK);		
+	}
+	
+	@PutMapping(value="/remove-label-from-note/{noteId}")
+	public ResponseEntity<ResponseDTO> removeLabelFromNote(@RequestHeader(value = "token") String token, @PathVariable(value="noteId")String noteId,@RequestBody String labelName) throws OwnerOfNoteNotFoundException, NoteNotFoundException, LabelException{
+
+		noteService.removeLabelFromNote(token,noteId,labelName);
+		ResponseDTO responseDTO = new ResponseDTO();
+		responseDTO.setMessage(messagePropertyConfig.getRemoveLabelFromNoteMsg());
+		responseDTO.setStatus(messagePropertyConfig.getSuccessfulStatus());
+		return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+	}
+
 }

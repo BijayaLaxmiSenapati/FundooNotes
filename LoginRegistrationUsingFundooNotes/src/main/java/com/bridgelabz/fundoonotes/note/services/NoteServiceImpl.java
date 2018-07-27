@@ -6,11 +6,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.bridgelabz.fundoonotes.note.exceptions.ArchieveException;
 import com.bridgelabz.fundoonotes.note.exceptions.EmptyNoteException;
 import com.bridgelabz.fundoonotes.note.exceptions.InvalidDateException;
@@ -233,6 +231,7 @@ public class NoteServiceImpl implements NoteService {
 			note.setArchived(false);
 		}
 		note.setPinned(true);
+		noteRepository.save(note);
 	}
 
 	@Override
@@ -244,6 +243,7 @@ public class NoteServiceImpl implements NoteService {
 			throw new PinException("The note is already unPinned");
 		}
 		note.setPinned(false);
+		noteRepository.save(note);
 	}
 
 	@Override
@@ -256,6 +256,7 @@ public class NoteServiceImpl implements NoteService {
 			throw new ArchieveException("The note is already added to archieve");
 		}
 		note.setArchived(true);
+		noteRepository.save(note);
 	}
 
 	@Override
@@ -268,6 +269,7 @@ public class NoteServiceImpl implements NoteService {
 			throw new ArchieveException("The note is not present in archieve");
 		}
 		note.setArchived(false);
+		noteRepository.save(note);
 	}
 
 	@Override
@@ -359,7 +361,7 @@ public class NoteServiceImpl implements NoteService {
 		}
 
 		List<Note> listOfNotes = new ArrayList<>();
-		listOfNotes =  noteRepository.findAllByuserId(userIdFromToken);
+		listOfNotes = noteRepository.findAllByuserId(userIdFromToken);
 
 		for (int i = 0; i < listOfNotes.size(); i++) {
 			if (listOfNotes.get(i).getLabelList() != null) {
@@ -381,7 +383,7 @@ public class NoteServiceImpl implements NoteService {
 
 	@Override
 	public void deleteLabel(String token, String labelName) throws OwnerOfNoteNotFoundException, LabelException {
-		
+
 		String userIdFromToken = tokenProvider.parseToken(token);
 		Optional<User> optionalUser = userRepsitory.findById(userIdFromToken);
 		if (!optionalUser.isPresent()) {
@@ -392,15 +394,14 @@ public class NoteServiceImpl implements NoteService {
 		if (labelOfUser == null) {
 			throw new LabelException("given label not found");
 		}
-		
+
 		List<Note> listOfNotes = new ArrayList<>();
 		listOfNotes = noteRepository.findAllByuserId(userIdFromToken);
-		
+
 		for (int i = 0; i < listOfNotes.size(); i++) {
 			if (listOfNotes.get(i).getLabelList() != null) {
 				for (int j = 0; j < listOfNotes.get(i).getLabelList().size(); j++) {
 					if (listOfNotes.get(i).getLabelList().get(j).getName().equals(labelName)) {
-
 
 						listOfNotes.get(i).getLabelList().remove(j);
 
@@ -414,6 +415,135 @@ public class NoteServiceImpl implements NoteService {
 		labelRepository.delete(labelOfUser);
 
 	}
-	
 
+	@Override
+	public List<Note> notesByLabelName(String token, String labelName)
+			throws OwnerOfNoteNotFoundException, LabelException {
+		String userIdFromToken = tokenProvider.parseToken(token);
+		Optional<User> optionalUser = userRepsitory.findById(userIdFromToken);
+		if (!optionalUser.isPresent()) {
+			throw new OwnerOfNoteNotFoundException("Note owner not present");
+		}
+
+		Label labelOfUser = labelRepository.findByUserIdAndName(userIdFromToken, labelName);
+		if (labelOfUser == null) {
+			throw new LabelException("given label not found");
+		}
+		List<Note> noteList = new ArrayList<>();
+		noteList = noteRepository.findAllByuserId(userIdFromToken);
+		List<Note> noteListWithLabel = new ArrayList<Note>();
+		for (int i = 0; i < noteList.size(); i++) {
+			if (noteList.get(i).getLabelList() != null) {
+				for (int j = 0; j < noteList.get(i).getLabelList().size(); j++) {
+
+					if (noteList.get(i).getLabelList().get(j).getName().equals(labelName)) {
+
+						noteListWithLabel.add(noteList.get(i));
+					}
+				}
+			}
+
+		}
+		return noteListWithLabel;
+	}
+
+	@Override
+	public List<Label> getAllLabel(String token) throws OwnerOfNoteNotFoundException, LabelException {
+
+		String userIdFromToken = tokenProvider.parseToken(token);
+		Optional<User> optionalUser = userRepsitory.findById(userIdFromToken);
+		if (!optionalUser.isPresent()) {
+			throw new OwnerOfNoteNotFoundException("Note owner not present");
+		}
+
+		List<Label> labelsOfUser = labelRepository.findAllByUserId(userIdFromToken);
+		if (labelsOfUser == null) {
+			throw new LabelException("given label not found");
+		}
+
+		return labelsOfUser;
+	}
+
+	@Override
+	public List<Note> getAllTrashedNote(String token) throws OwnerOfNoteNotFoundException {
+
+		String userIdFromToken = tokenProvider.parseToken(token);
+		Optional<User> optionalUser = userRepsitory.findById(userIdFromToken);
+		if (!optionalUser.isPresent()) {
+			throw new OwnerOfNoteNotFoundException("Note owner not present");
+		}
+		List<Note> noteList = new ArrayList<Note>();
+		noteList = noteRepository.findAllByuserId(userIdFromToken);
+		List<Note> trashedNoteList = new ArrayList<Note>();
+		for (int i = 0; i < noteList.size(); i++) {
+			if (noteList.get(i).isTrashed()) {
+				trashedNoteList.add(noteList.get(i));
+			}
+		}
+		return trashedNoteList;
+	}
+
+	@Override
+	public List<Note> getAllArchivedNote(String token) throws OwnerOfNoteNotFoundException {
+
+		String userIdFromToken = tokenProvider.parseToken(token);
+		Optional<User> optionalUser = userRepsitory.findById(userIdFromToken);
+		if (!optionalUser.isPresent()) {
+			throw new OwnerOfNoteNotFoundException("Note owner not present");
+		}
+		List<Note> noteList = new ArrayList<Note>();
+		noteList = noteRepository.findAllByuserId(userIdFromToken);
+		List<Note> archivedNoteList = new ArrayList<Note>();
+		for (int i = 0; i < noteList.size(); i++) {
+			if (noteList.get(i).isArchived()) {
+				archivedNoteList.add(noteList.get(i));
+			}
+		}
+		return archivedNoteList;
+	}
+
+	@Override
+	public void emptyTrash(String token) throws OwnerOfNoteNotFoundException {
+
+		String userIdFromToken = tokenProvider.parseToken(token);
+		Optional<User> optionalUser = userRepsitory.findById(userIdFromToken);
+		if (!optionalUser.isPresent()) {
+			throw new OwnerOfNoteNotFoundException("Note owner not present");
+		}
+
+		List<Note> noteList = new ArrayList<Note>();
+		noteList = noteRepository.findAllByuserId(userIdFromToken);
+
+		for (int i = 0; i < noteList.size(); i++) {
+			if (noteList.get(i).isTrashed()) {
+				noteRepository.delete(noteList.get(i));
+			}
+		}
+	}
+
+	@Override
+	public void removeLabelFromNote(String token, String noteId, String labelName)
+			throws OwnerOfNoteNotFoundException, NoteNotFoundException, LabelException {
+
+		String userIdFromToken = tokenProvider.parseToken(token);
+		Optional<User> optionalUser = userRepsitory.findById(userIdFromToken);
+		if (!optionalUser.isPresent()) {
+			throw new OwnerOfNoteNotFoundException("Note owner not present");
+		}
+		Optional<Note> optionalNote = noteRepository.findById(noteId);
+		if (!optionalNote.isPresent()) {
+			throw new NoteNotFoundException("Given note is not present");
+		}
+		Label label = labelRepository.findByUserIdAndName(userIdFromToken, labelName);
+		if (label == null) {
+			throw new LabelException("label not found for the note");
+		}
+		Note note = optionalNote.get();
+		for (int i = 0; i < note.getLabelList().size(); i++) {
+			if (note.getLabelList().get(i).getName().equals(labelName)) {
+				note.getLabelList().remove(i);
+				noteRepository.save(note);
+			}
+		}
+	}
 }

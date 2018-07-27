@@ -32,7 +32,8 @@ public class LoginRegistrationUsingFundooNotesApplicationTests {
 
 	}
 
-	/************************************* login
+	/*************************************
+	 * login
 	 *********************************************/
 	@Test
 	public void loginTest() throws Exception {
@@ -101,7 +102,7 @@ public class LoginRegistrationUsingFundooNotesApplicationTests {
 	}
 
 	@Test
-	public void RegistrationTestWithWrongName() throws Exception {
+	public void registrationTestWithWrongName() throws Exception {
 		mockMvc.perform(MockMvcRequestBuilders.post("/fundoo/register").contentType(MediaType.APPLICATION_JSON).content(
 				"{ \"name\": \"Bi\", \"email\" : \"simranbodra6@gmail.com\", \"contactNumber\" : \"7377145005\", \"password\" : \"Mama1234?\", \"confirmPassword\" : \"Mama1234?\" }")
 				.accept(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$.message").exists())
@@ -112,7 +113,7 @@ public class LoginRegistrationUsingFundooNotesApplicationTests {
 	}
 
 	@Test
-	public void RegistrationTestWithNullField() throws Exception {
+	public void registrationTestWithNullField() throws Exception {
 		mockMvc.perform(MockMvcRequestBuilders.post("/fundoo/register").contentType(MediaType.APPLICATION_JSON).content(
 				"{\"email\" : \"simranbodra6@gmail.com\", \"contactNumber\" : \"7377145005\", \"password\" : \"Mama1234?\", \"confirmPassword\" : \"Mama1234?\" }")
 				.accept(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$.message").exists())
@@ -123,7 +124,7 @@ public class LoginRegistrationUsingFundooNotesApplicationTests {
 	}
 
 	@Test
-	public void RegistrationTestWithWrongContactNum() throws Exception {
+	public void registrationTestWithWrongContactNum() throws Exception {
 		mockMvc.perform(MockMvcRequestBuilders.post("/fundoo/register").contentType(MediaType.APPLICATION_JSON).content(
 				"{ \"name\": \"Bijaya Laxmi Senapati\", \"email\" : \"simranbodra6@gmail.com\", \"contactNumber\" : \"737714\", \"password\" : \"Mama1234?\", \"confirmPassword\" : \"Mama1234?\" }")
 				.accept(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$.message").exists())
@@ -134,7 +135,7 @@ public class LoginRegistrationUsingFundooNotesApplicationTests {
 	}
 
 	@Test
-	public void RegistrationTestWithUnequalPasswordField() throws Exception {
+	public void registrationTestWithUnequalPasswordField() throws Exception {
 		mockMvc.perform(MockMvcRequestBuilders.post("/fundoo/register").contentType(MediaType.APPLICATION_JSON).content(
 				"{ \"name\": \"Bijaya Laxmi Senapati\", \"email\" : \"simranbodra6@gmail.com\", \"contactNumber\" : \"7377145005\", \"password\" : \"Mama1234?\", \"confirmPassword\" : \"Mama234?\" }")
 				.accept(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$.message").exists())
@@ -146,7 +147,7 @@ public class LoginRegistrationUsingFundooNotesApplicationTests {
 	}
 
 	@Test
-	public void RegistrationTestWithInvalidPassword() throws Exception {
+	public void registrationTestWithInvalidPassword() throws Exception {
 		mockMvc.perform(MockMvcRequestBuilders.post("/fundoo/register").contentType(MediaType.APPLICATION_JSON).content(
 				"{ \"name\": \"Bijaya Laxmi Senapati\", \"email\" : \"simranbodra6@gmail.com\", \"contactNumber\" : \"7377145005\", \"password\" : \"Mama12\", \"confirmPassword\" : \"Mama1234?\" }")
 				.accept(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$.message").exists())
@@ -157,7 +158,7 @@ public class LoginRegistrationUsingFundooNotesApplicationTests {
 	}
 
 	@Test
-	public void RegistrationTestWithInvalidRegexOfEmail() throws Exception {
+	public void registrationTestWithInvalidRegexOfEmail() throws Exception {
 		mockMvc.perform(MockMvcRequestBuilders.post("/fundoo/register").contentType(MediaType.APPLICATION_JSON).content(
 				"{ \"name\": \"Bijaya Laxmi Senapati\", \"email\" : \"simranbodra6gmail.com\", \"contactNumber\" : \"7377145005\", \"password\" : \"Mama1234?\", \"confirmPassword\" : \"Mama1234?\" }")
 				.accept(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$.message").exists())
@@ -165,6 +166,31 @@ public class LoginRegistrationUsingFundooNotesApplicationTests {
 				.andExpect(jsonPath("$.message").value("Email Format not correct"))
 				.andExpect(jsonPath("$.status").value(-3));
 
+	}
+	/*************************************************forgotPassword*****************************************/
+	@Test
+	public void forgotPasswordTest() throws Exception {
+		mockMvc.perform(MockMvcRequestBuilders.post("/fundoo/forgotpassword").contentType(MediaType.APPLICATION_JSON)
+				.content("bijaya.8434@gmail.com")
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.message").exists())
+				.andExpect(jsonPath("$.status").exists())
+				.andExpect(jsonPath("$.message").value("email sent for changing password"))
+				.andExpect(jsonPath("$.status").value(1));
+	}
+	
+	@Test
+	public void resetPasswordTest() throws Exception {
+		
+		mockMvc.perform(MockMvcRequestBuilders.post("/fundoo/resetPassword").contentType(MediaType.APPLICATION_JSON)
+				.param("token",
+				"eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiI1YjUyYjgwNTQ5MzA0ZDM1Y2ZmZWYyOGYifQ.18aeyklbm4sIG_vFtkBRfQ7xJMaO8L5Jo5qtqhLAmqVdyE5UCMvc8dhOPJosBjSdYlmkUjgj8sEz11piCdVxlw")
+				.content(
+						"{ \"newPassword\": \"Mama1234?\", \"confirmNewPassword\" : \"Mama1234?\"}").accept(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.message").exists())
+				.andExpect(jsonPath("$.status").exists())
+				.andExpect(jsonPath("$.message").value("password of your account has been successfully changed"))
+				.andExpect(jsonPath("$.status").value(1));
 	}
 
 }

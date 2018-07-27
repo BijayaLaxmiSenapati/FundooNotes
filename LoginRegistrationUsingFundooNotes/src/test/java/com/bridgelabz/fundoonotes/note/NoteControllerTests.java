@@ -102,8 +102,6 @@ public class NoteControllerTests {
 
 	/*********************************************
 	 * getAllNotes
-	 * 
-	 * @throws Exception
 	 *********************************************************/
 
 	@Test
@@ -111,19 +109,24 @@ public class NoteControllerTests {
 		mockMvc.perform(MockMvcRequestBuilders.get("/notes/get-all-notes").contentType(MediaType.APPLICATION_JSON)
 				.header("token",
 						"eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiI1YjUyYjgwNTQ5MzA0ZDM1Y2ZmZWYyOGYifQ.18aeyklbm4sIG_vFtkBRfQ7xJMaO8L5Jo5qtqhLAmqVdyE5UCMvc8dhOPJosBjSdYlmkUjgj8sEz11piCdVxlw")
-				.accept(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$.*", hasSize(2))).andDo(print());
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.*", hasSize(3)))
+				.andDo(print());
 	}
 
 	/*****************************************************
 	 * trashNote
 	 **************************************************************/
 	public void trashNoteTestWithoutNoteId() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.put("/notes/trash-note/{id}", "5b580a4149304d2c70c04540")
+		mockMvc.perform(MockMvcRequestBuilders.put("/notes/trash-note/{id}", "5b49c9da49304d2d97299f92")
 				.contentType(MediaType.APPLICATION_JSON)
 				.header("token",
 						"eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiI1YjUyYjgwNTQ5MzA0ZDM1Y2ZmZWYyOGYifQ.18aeyklbm4sIG_vFtkBRfQ7xJMaO8L5Jo5qtqhLAmqVdyE5UCMvc8dhOPJosBjSdYlmkUjgj8sEz11piCdVxlw")
-				.accept(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$.message").value("Note added to trash"))
-				.andExpect(jsonPath("$.status").value(1)).andExpect(jsonPath("$.*", hasSize(2))).andDo(print());
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.message").value("Note added to trash"))
+				.andExpect(jsonPath("$.status").value(1))	
+				.andExpect(jsonPath("$.*", hasSize(2)))
+				.andDo(print());
 	}
 
 }

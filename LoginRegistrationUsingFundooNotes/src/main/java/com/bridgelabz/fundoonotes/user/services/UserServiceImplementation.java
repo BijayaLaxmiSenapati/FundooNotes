@@ -37,8 +37,6 @@ public class UserServiceImplementation implements UserService {
 	@Autowired
 	private Producer producer;
 
-	//private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImplementation.class);
-
 	@Override
 	public String login(LoginDTO loginDTO) throws LoginException {
 		Utility.validateUserWhileLogin(loginDTO);
@@ -78,7 +76,6 @@ public class UserServiceImplementation implements UserService {
 			throw new RegistrationException("Email id already exists");
 		}
 
-		// try getbean
 		User user = new User();
 		user.setName(registrationDTO.getName());
 		user.setPassword(passwordEncoder.encode(registrationDTO.getConfirmPassword()));
@@ -93,7 +90,6 @@ public class UserServiceImplementation implements UserService {
 		TokenProvider tokenProvider = new TokenProvider();
 		String token = tokenProvider.generateToken(userId);
 
-		// try getbean
 		Email email = new Email();
 		email.setTo(registrationDTO.getEmail());
 		email.setSubject("Activation Link");
@@ -131,7 +127,6 @@ public class UserServiceImplementation implements UserService {
 		TokenProvider tokenProvider = new TokenProvider();
 		String token = tokenProvider.generateToken(userId);
 
-		// try getbean
 		Email email = new Email();
 		email.setTo(emailId);
 		email.setSubject("Link for forgot password");

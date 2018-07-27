@@ -1,9 +1,7 @@
 package com.bridgelabz.fundoonotes.note.services;
 
 import java.text.ParseException;
-import java.util.Date;
 import java.util.List;
-
 import com.bridgelabz.fundoonotes.note.exceptions.PinException;
 import com.bridgelabz.fundoonotes.note.exceptions.ArchieveException;
 import com.bridgelabz.fundoonotes.note.exceptions.EmptyNoteException;
@@ -14,6 +12,7 @@ import com.bridgelabz.fundoonotes.note.exceptions.NoteException;
 import com.bridgelabz.fundoonotes.note.exceptions.NoteNotFoundException;
 import com.bridgelabz.fundoonotes.note.exceptions.NoteTrashException;
 import com.bridgelabz.fundoonotes.note.exceptions.OwnerOfNoteNotFoundException;
+import com.bridgelabz.fundoonotes.note.models.Label;
 import com.bridgelabz.fundoonotes.note.models.Note;
 import com.bridgelabz.fundoonotes.note.models.NoteCreateDTO;
 import com.bridgelabz.fundoonotes.note.models.NoteUpdateDTO;
@@ -104,5 +103,17 @@ public interface NoteService {
 	void editLabel(String token, String currentLabelName, String newLabelName) throws OwnerOfNoteNotFoundException, LabelException ;
 
 	void deleteLabel(String token, String labelName) throws OwnerOfNoteNotFoundException, LabelException;
+
+	List<Note> notesByLabelName(String token, String labelName) throws OwnerOfNoteNotFoundException, LabelException;
+
+	List<Label> getAllLabel(String token) throws OwnerOfNoteNotFoundException, LabelException;
+
+	List<Note> getAllTrashedNote(String token) throws OwnerOfNoteNotFoundException;
+
+	List<Note> getAllArchivedNote(String token) throws OwnerOfNoteNotFoundException;
+
+	void emptyTrash(String token) throws OwnerOfNoteNotFoundException;
+
+	void removeLabelFromNote(String token, String noteId,String labelName) throws OwnerOfNoteNotFoundException, NoteNotFoundException, LabelException;
 
 }

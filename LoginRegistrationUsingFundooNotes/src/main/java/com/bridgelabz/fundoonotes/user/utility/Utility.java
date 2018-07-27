@@ -81,7 +81,7 @@ public class Utility {
 	 */
 	public static void validateWhileResetPassword(ResetPasswordDTO resetPasswordDTO) throws LoginException {
 		if (resetPasswordDTO.getNewPassword() == null || resetPasswordDTO.getConfirmNewPassword() == null) {
-			throw new LoginException("All fields should be filled");
+			throw new LoginException("Both \"newPassword\" and \"confirmPassword\" fields should not be empty");
 		} else if (resetPasswordDTO.getNewPassword().length() < 8
 				|| resetPasswordDTO.getConfirmNewPassword().length() < 8) {
 			throw new LoginException("Password should have atleast 8 charecters");
