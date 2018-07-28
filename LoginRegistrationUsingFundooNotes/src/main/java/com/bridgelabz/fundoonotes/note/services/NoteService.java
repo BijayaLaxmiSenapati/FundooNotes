@@ -12,6 +12,7 @@ import com.bridgelabz.fundoonotes.note.exceptions.NoteException;
 import com.bridgelabz.fundoonotes.note.exceptions.NoteNotFoundException;
 import com.bridgelabz.fundoonotes.note.exceptions.NoteTrashException;
 import com.bridgelabz.fundoonotes.note.exceptions.OwnerOfNoteNotFoundException;
+import com.bridgelabz.fundoonotes.note.models.ColorDTO;
 import com.bridgelabz.fundoonotes.note.models.Label;
 import com.bridgelabz.fundoonotes.note.models.Note;
 import com.bridgelabz.fundoonotes.note.models.NoteCreateDTO;
@@ -46,7 +47,7 @@ public interface NoteService {
 	 * @param token
 	 * @return
 	 */
-	List<Note> getAllNotes(String token);
+	List<NoteViewDTO> getAllNotes(String token);
 
 	/**
 	 * @param token
@@ -115,5 +116,7 @@ public interface NoteService {
 	void emptyTrash(String token) throws OwnerOfNoteNotFoundException;
 
 	void removeLabelFromNote(String token, String noteId,String labelName) throws OwnerOfNoteNotFoundException, NoteNotFoundException, LabelException;
+
+	void addColor(String token, String noteId, ColorDTO colorDTO) throws OwnerOfNoteNotFoundException, NoteNotFoundException;
 
 }

@@ -19,6 +19,7 @@ import com.bridgelabz.fundoonotes.note.exceptions.NoteNotFoundException;
 import com.bridgelabz.fundoonotes.note.exceptions.NoteTrashException;
 import com.bridgelabz.fundoonotes.note.exceptions.OwnerOfNoteNotFoundException;
 import com.bridgelabz.fundoonotes.note.exceptions.PinException;
+import com.bridgelabz.fundoonotes.note.models.ColorDTO;
 import com.bridgelabz.fundoonotes.note.models.Label;
 import com.bridgelabz.fundoonotes.note.models.Note;
 import com.bridgelabz.fundoonotes.note.models.NoteCreateDTO;
@@ -132,12 +133,28 @@ public class NoteServiceImpl implements NoteService {
 	}
 
 	@Override
-	public List<Note> getAllNotes(String token) {
+	public List<NoteViewDTO> getAllNotes(String token) {
 
 		String userIdFromToken = tokenProvider.parseToken(token);
 		List<Note> noteList = noteRepository.findAllByuserId(userIdFromToken);
 
-		return noteList;
+		List<Note> pinnedList = new ArrayList<>();
+		List<Note> unPinnedList = new ArrayList<>();
+		for (int i = 0; i < noteList.size(); i++) {
+
+			if (noteList.get(i).isPinned()) {
+				pinnedList.add(noteList.get(i));
+			} else
+				unPinnedList.add(noteList.get(i));
+		}
+		noteList = new ArrayList<>();
+		noteList.addAll(pinnedList);
+		noteList.addAll(unPinnedList);
+		List<NoteViewDTO> noteViewDTO = new ArrayList<>();
+		for (Note note : noteList) {
+			noteViewDTO.add(modelMapper.map(note, NoteViewDTO.class));
+		}
+		return noteViewDTO;
 	}
 
 	@Override
@@ -172,9 +189,10 @@ public class NoteServiceImpl implements NoteService {
 	private Note validate(String token, String noteId)
 			throws NoteException, OwnerOfNoteNotFoundException, NoteNotFoundException, NoteAuthorisationException {
 
-		if (noteId == null) {
-			throw new NoteException("For deletion of note \"id\" is needed");
-		}
+		/*
+		 * if (noteId == null) { throw new
+		 * NoteException("For deletion of note \"id\" is needed"); }
+		 */
 
 		String userIdFromToken = tokenProvider.parseToken(token);
 		Optional<User> optionalUser = userRepsitory.findById(userIdFromToken);
@@ -195,6 +213,7 @@ public class NoteServiceImpl implements NoteService {
 	@Override
 	public void addReminder(String token, String noteId, String remindDate) throws ParseException, InvalidDateException,
 			NoteException, OwnerOfNoteNotFoundException, NoteNotFoundException, NoteAuthorisationException {
+
 		Date remindDate1 = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss").parse(remindDate);
 
 		Note note = validate(token, noteId);
@@ -227,10 +246,10 @@ public class NoteServiceImpl implements NoteService {
 		if (note.isPinned()) {
 			throw new PinException("The note is already pinned");
 		}
-		if (note.isArchived()) {
-			note.setArchived(false);
-		}
+		note.setArchived(false);
+
 		note.setPinned(true);
+
 		noteRepository.save(note);
 	}
 
@@ -277,6 +296,7 @@ public class NoteServiceImpl implements NoteService {
 
 		String userIdFromToken = tokenProvider.parseToken(token);
 		System.out.println(labelRepository.findByUserIdAndName(userIdFromToken, labelName));
+
 		if (labelRepository.findByUserIdAndName(userIdFromToken, labelName) != null) {
 			throw new LabelException("label name already present");
 		}
@@ -530,20 +550,44 @@ public class NoteServiceImpl implements NoteService {
 		if (!optionalUser.isPresent()) {
 			throw new OwnerOfNoteNotFoundException("Note owner not present");
 		}
+
 		Optional<Note> optionalNote = noteRepository.findById(noteId);
 		if (!optionalNote.isPresent()) {
 			throw new NoteNotFoundException("Given note is not present");
 		}
+
 		Label label = labelRepository.findByUserIdAndName(userIdFromToken, labelName);
 		if (label == null) {
 			throw new LabelException("label not found for the note");
 		}
+
 		Note note = optionalNote.get();
-		for (int i = 0; i < note.getLabelList().size(); i++) {
-			if (note.getLabelList().get(i).getName().equals(labelName)) {
-				note.getLabelList().remove(i);
-				noteRepository.save(note);
-			}
+
+		note.getLabelList().remove(label);
+		/*
+		 * for (int i = 0; i < note.getLabelList().size(); i++) { if
+		 * (note.getLabelList().get(i).getName().equals(labelName)) {
+		 * note.getLabelList().remove(i); noteRepository.save(note); } }
+		 */
+		noteRepository.save(note);
+	}
+
+	@Override
+	public void addColor(String token, String noteId, ColorDTO colorDTO)
+			throws OwnerOfNoteNotFoundException, NoteNotFoundException {
+
+		String userIdFromToken = tokenProvider.parseToken(token);
+		Optional<User> optionalUser = userRepsitory.findById(userIdFromToken);
+		if (!optionalUser.isPresent()) {
+			throw new OwnerOfNoteNotFoundException("Note owner not present");
 		}
+
+		Optional<Note> optionalNote = noteRepository.findById(noteId);
+		if (!optionalNote.isPresent()) {
+			throw new NoteNotFoundException("Given note is not present");
+		}
+		// String color=colorDTO.getColor();
+		optionalNote.get().setColor(colorDTO.getColor());
+		noteRepository.save(optionalNote.get());
 	}
 }

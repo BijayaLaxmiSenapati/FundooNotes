@@ -33,7 +33,7 @@ public class UserController {
 
 	@Autowired
 	MessagePropertyConfig messagePropertyConfig;
-	
+
 	@Autowired
 	private UserService userService;
 
@@ -44,9 +44,10 @@ public class UserController {
 	 * @throws LoginException
 	 */
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public ResponseEntity<ResponseDTO> login(@RequestBody LoginDTO loginDTO, HttpServletResponse response) throws LoginException {
+	public ResponseEntity<ResponseDTO> login(@RequestBody LoginDTO loginDTO, HttpServletResponse response)
+			throws LoginException {
 
-		String tokenValue=userService.login(loginDTO);
+		String tokenValue = userService.login(loginDTO);
 		ResponseDTO dto = new ResponseDTO();
 		dto.setMessage(messagePropertyConfig.getLoginMsg());
 		dto.setStatus(messagePropertyConfig.getSuccessfulStatus());
@@ -119,7 +120,7 @@ public class UserController {
 			@RequestBody ResetPasswordDTO resetPasswordDTO) throws LoginException {
 
 		userService.resetPassword(token, resetPasswordDTO);
-		
+
 		ResponseDTO dto = new ResponseDTO();
 		dto.setMessage(messagePropertyConfig.getResetPasswordMsg());
 		dto.setStatus(messagePropertyConfig.getSuccessfulStatus());

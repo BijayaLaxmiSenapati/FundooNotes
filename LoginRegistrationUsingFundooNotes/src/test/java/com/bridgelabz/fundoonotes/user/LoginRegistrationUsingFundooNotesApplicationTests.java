@@ -141,15 +141,15 @@ public class LoginRegistrationUsingFundooNotesApplicationTests {
 				.accept(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$.message").exists())
 				.andExpect(jsonPath("$.status").exists())
 				.andExpect(jsonPath("$.message")
-						.value("Both 'password' and 'confirmPassword' field should have same value"))
+				.value("Both 'password' and 'confirmPassword' field should have same value"))
 				.andExpect(jsonPath("$.status").value(-3));
 
 	}
 
 	@Test
 	public void registrationTestWithInvalidPassword() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.post("/fundoo/register").contentType(MediaType.APPLICATION_JSON).content(
-				"{ \"name\": \"Bijaya Laxmi Senapati\", \"email\" : \"simranbodra6@gmail.com\", \"contactNumber\" : \"7377145005\", \"password\" : \"Mama12\", \"confirmPassword\" : \"Mama1234?\" }")
+		mockMvc.perform(MockMvcRequestBuilders.post("/fundoo/register").contentType(MediaType.APPLICATION_JSON)
+				.content("{ \"name\": \"Bijaya Laxmi Senapati\", \"email\" : \"simranbodra6@gmail.com\", \"contactNumber\" : \"7377145005\", \"password\" : \"Mama12\", \"confirmPassword\" : \"Mama1234?\" }")
 				.accept(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$.message").exists())
 				.andExpect(jsonPath("$.status").exists())
 				.andExpect(jsonPath("$.message").value("Password should have atleast 8 charecters"))
@@ -185,8 +185,8 @@ public class LoginRegistrationUsingFundooNotesApplicationTests {
 		mockMvc.perform(MockMvcRequestBuilders.post("/fundoo/resetPassword").contentType(MediaType.APPLICATION_JSON)
 				.param("token",
 				"eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiI1YjUyYjgwNTQ5MzA0ZDM1Y2ZmZWYyOGYifQ.18aeyklbm4sIG_vFtkBRfQ7xJMaO8L5Jo5qtqhLAmqVdyE5UCMvc8dhOPJosBjSdYlmkUjgj8sEz11piCdVxlw")
-				.content(
-						"{ \"newPassword\": \"Mama1234?\", \"confirmNewPassword\" : \"Mama1234?\"}").accept(MediaType.APPLICATION_JSON))
+				.content("{ \"newPassword\": \"Mama1234?\", \"confirmNewPassword\" : \"Mama1234?\"}")
+				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$.message").exists())
 				.andExpect(jsonPath("$.status").exists())
 				.andExpect(jsonPath("$.message").value("password of your account has been successfully changed"))

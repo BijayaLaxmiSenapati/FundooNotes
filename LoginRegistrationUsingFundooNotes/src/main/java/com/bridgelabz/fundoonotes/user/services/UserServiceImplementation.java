@@ -57,7 +57,7 @@ public class UserServiceImplementation implements UserService {
 			throw new LoginException(
 					"given account is not yet activated. First activate your account from the inbox, with mail SUBJECT \"Activation Link\"");
 		}
-		
+
 		TokenProvider tokenProvider = new TokenProvider();
 		String token = tokenProvider.generateToken(dbUser.getId());
 		return token;
@@ -98,7 +98,6 @@ public class UserServiceImplementation implements UserService {
 		producer.produceMsg(email);
 
 	}
-	
 
 	@Override
 	public void activateUser(String token) {

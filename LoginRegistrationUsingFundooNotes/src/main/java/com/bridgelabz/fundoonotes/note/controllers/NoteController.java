@@ -28,6 +28,7 @@ import com.bridgelabz.fundoonotes.note.exceptions.NoteException;
 import com.bridgelabz.fundoonotes.note.exceptions.NoteNotFoundException;
 import com.bridgelabz.fundoonotes.note.exceptions.NoteTrashException;
 import com.bridgelabz.fundoonotes.note.exceptions.OwnerOfNoteNotFoundException;
+import com.bridgelabz.fundoonotes.note.models.ColorDTO;
 import com.bridgelabz.fundoonotes.note.models.Label;
 import com.bridgelabz.fundoonotes.note.models.Note;
 import com.bridgelabz.fundoonotes.note.models.NoteCreateDTO;
@@ -90,21 +91,10 @@ public class NoteController {
 	 * @return
 	 */
 	@GetMapping(value = "/get-all-notes")
-	public ResponseEntity<List<Note>> getAllNotes(@RequestHeader(value = "token") String token) {
-		List<Note> list = noteService.getAllNotes(token);
-		List<Note> pinnedList=new ArrayList<>();
-		List<Note> unPinnedList=new ArrayList<>();
-		for (int i = 0; i < list.size(); i++) {
-			
-			if(list.get(i).isPinned()) {
-				pinnedList.add(list.get(i));
-			}
-			else
-				unPinnedList.add(list.get(i));
-		}
-		list=new ArrayList<>();
-		list.addAll(pinnedList);
-		list.addAll(unPinnedList);
+	public ResponseEntity<List<NoteViewDTO>> getAllNotes(@RequestHeader(value = "token") String token) {
+		
+		List<NoteViewDTO> list = noteService.getAllNotes(token);
+
 		return new ResponseEntity<>(list, HttpStatus.OK);
 	}
 
@@ -173,6 +163,7 @@ public class NoteController {
 			@PathVariable(value = "id") String id, @RequestBody String remindDate)
 			throws ParseException, InvalidDateException, NoteException, OwnerOfNoteNotFoundException,
 			NoteNotFoundException, NoteAuthorisationException {
+		
 		noteService.addReminder(token, id, remindDate);
 
 		ResponseDTO responseDTO = new ResponseDTO();
@@ -192,18 +183,29 @@ public class NoteController {
 	 * @throws NoteNotFoundException
 	 * @throws NoteAuthorisationException
 	 */
-	@PutMapping(value = "/remove-reminder/{id}")
+	@PutMapping(value = "/remove-reminder/{noteId}")
 	public ResponseEntity<ResponseDTO> removeReminder(@RequestHeader(value = "token") String token,
-			@PathVariable(value = "id") String id) throws ParseException, InvalidDateException, NoteException,
+			@PathVariable(value = "noteId") String noteId) throws ParseException, InvalidDateException, NoteException,
 			OwnerOfNoteNotFoundException, NoteNotFoundException, NoteAuthorisationException {
 
-		noteService.removeReminder(token, id);
+		noteService.removeReminder(token, noteId);
 
 		ResponseDTO responseDTO = new ResponseDTO();
 		responseDTO.setMessage(messagePropertyConfig.getRemoveReminderMsg());
 		responseDTO.setStatus(messagePropertyConfig.getSuccessfulStatus());
 		return new ResponseEntity<>(responseDTO, HttpStatus.OK);
 	}
+	
+	@PutMapping(value="/add-color/{noteId}")
+	public ResponseEntity<ResponseDTO> addColor(@RequestHeader(value = "token") String token,
+			@PathVariable(value = "noteId") String noteId,@RequestBody ColorDTO colorDTO) throws OwnerOfNoteNotFoundException, NoteNotFoundException{
+		
+		noteService.addColor(token,noteId,colorDTO);		
+		
+		ResponseDTO responseDTO = new ResponseDTO();
+		responseDTO.setMessage("Successfully color is added");//add to properties
+		responseDTO.setStatus(messagePropertyConfig.getSuccessfulStatus());
+		return new ResponseEntity<>(responseDTO, HttpStatus.OK);	}
 
 	@PutMapping(value = "/add-pin/{id}")
 	public ResponseEntity<ResponseDTO> addPin(@RequestHeader(value = "token") String token,
@@ -347,7 +349,9 @@ public class NoteController {
 	
 	@DeleteMapping(value="/empty-trash")
 	public ResponseEntity<ResponseDTO> emptyTrash(@RequestHeader(value = "token") String token) throws OwnerOfNoteNotFoundException{
+		
 		noteService.emptyTrash(token);
+		
 		ResponseDTO responseDTO = new ResponseDTO();
 		responseDTO.setMessage(messagePropertyConfig.getEmptyTrashMsg());
 		responseDTO.setStatus(messagePropertyConfig.getSuccessfulStatus());
@@ -358,6 +362,7 @@ public class NoteController {
 	public ResponseEntity<ResponseDTO> removeLabelFromNote(@RequestHeader(value = "token") String token, @PathVariable(value="noteId")String noteId,@RequestBody String labelName) throws OwnerOfNoteNotFoundException, NoteNotFoundException, LabelException{
 
 		noteService.removeLabelFromNote(token,noteId,labelName);
+		
 		ResponseDTO responseDTO = new ResponseDTO();
 		responseDTO.setMessage(messagePropertyConfig.getRemoveLabelFromNoteMsg());
 		responseDTO.setStatus(messagePropertyConfig.getSuccessfulStatus());
